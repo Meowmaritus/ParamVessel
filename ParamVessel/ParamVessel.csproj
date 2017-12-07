@@ -155,12 +155,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MeowDSIO\MeowDSIO.csproj">
-      <Project>{4AD69470-8146-4D20-94F0-DA9844EEE5A2}</Project>
-      <Name>MeowDSIO</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\Splash.png" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +168,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MeowDSIO\MeowDSIO\MeowDSIO.csproj">
+      <Project>{4ad69470-8146-4d20-94f0-da9844eee5a2}</Project>
+      <Name>MeowDSIO</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.2.0.0\build\netstandard1.4\Fody.targets" Condition="Exists('..\packages\Fody.2.0.0\build\netstandard1.4\Fody.targets')" />
