@@ -47,32 +47,32 @@
     </Reference>
     <Reference Include="MahApps.Metro, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>LIB\MahApps.Metro.dll</HintPath>
+      <HintPath>..\LIB\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Selen.Wpf.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc472ed4b6daaa58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>LIB\Selen.Wpf.Core.dll</HintPath>
+      <HintPath>..\LIB\Selen.Wpf.Core.dll</HintPath>
     </Reference>
     <Reference Include="Selen.Wpf.GenericAppTree, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc472ed4b6daaa58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>LIB\Selen.Wpf.GenericAppTree.dll</HintPath>
+      <HintPath>..\LIB\Selen.Wpf.GenericAppTree.dll</HintPath>
     </Reference>
     <Reference Include="Selen.Wpf.GenericAppTree.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc472ed4b6daaa58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>LIB\Selen.Wpf.GenericAppTree.Contracts.dll</HintPath>
+      <HintPath>..\LIB\Selen.Wpf.GenericAppTree.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="Selen.Wpf.SystemStyles, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc472ed4b6daaa58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>LIB\Selen.Wpf.SystemStyles.dll</HintPath>
+      <HintPath>..\LIB\Selen.Wpf.SystemStyles.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>LIB\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\LIB\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
