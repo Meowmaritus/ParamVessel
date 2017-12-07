@@ -58,8 +58,19 @@ namespace MeowDSIO.DataTypes.PARAM
 
             for (int i = 0; i < Parent.AppliedPARAMDEF.Entries.Count; i++)
             {
-                Parent.AppliedPARAMDEF.Entries[i]
-                    .WriteValueToParamEntryRawData(this, Cells[i].Value, ref offset, ref bitField, ref bitVal);
+                if (Parent.AppliedPARAMDEF.Entries[i].ValueBitCount == 1)
+                {
+                    Parent.AppliedPARAMDEF.Entries[i]
+                        .WriteValueToParamEntryRawData(this, Parent.AppliedPARAMDEF.Entries[i].DefaultValue != 0,
+                        ref offset, ref bitField, ref bitVal);
+                }
+                else
+                {
+                    Parent.AppliedPARAMDEF.Entries[i]
+                        .WriteValueToParamEntryRawData(this, Parent.AppliedPARAMDEF.Entries[i].DefaultValue,
+                        ref offset, ref bitField, ref bitVal);
+                }
+                
             }
         }
 

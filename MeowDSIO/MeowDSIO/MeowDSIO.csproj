@@ -51,6 +51,7 @@
     <Compile Include="DataFile.cs" />
     <Compile Include="DataFiles\BND3.cs" />
     <Compile Include="DataFiles\ESD.cs" />
+    <Compile Include="DataFiles\FMG.cs" />
     <Compile Include="DataFiles\LUAGNL.cs" />
     <Compile Include="DataFiles\LUAINFO.cs" />
     <Compile Include="DataFiles\MTD.cs" />
@@ -63,6 +64,10 @@
     <Compile Include="DataTypes\ESD\EzCondition.cs" />
     <Compile Include="DataTypes\ESD\EzFunc.cs" />
     <Compile Include="DataTypes\ESD\EzState.cs" />
+    <Compile Include="DataTypes\FMG\FMGChunk.cs" />
+    <Compile Include="DataTypes\FMG\FMGChunkHeaderBuffer.cs" />
+    <Compile Include="DataTypes\FMG\FMGEntryRef.cs" />
+    <Compile Include="DataTypes\FMG\FMGHeader.cs" />
     <Compile Include="DataTypes\LUAINFO\Goal.cs" />
     <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
     <Compile Include="DataTypes\LUAINFO\ScriptRef.cs" />
@@ -86,6 +91,10 @@
     <Compile Include="DataTypes\TAE\AnimationEvent.cs" />
     <Compile Include="DataTypes\TAE\AnimationEventParameter.cs" />
     <Compile Include="DataTypes\TAE\TAEHeader.cs" />
+    <Compile Include="DSBinaryReader.Endianness.cs" />
+    <Compile Include="DSBinaryReader.Utils.cs" />
+    <Compile Include="DSBinaryWriter.Endianness.cs" />
+    <Compile Include="DSBinaryWriter.Utils.cs" />
     <Compile Include="Exceptions\DSIOException.cs" />
     <Compile Include="Exceptions\DSIOExceptionType.cs" />
     <Compile Include="Exceptions\DSReadException.cs" />

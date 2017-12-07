@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO
 {
-    public class DSBinaryWriter : BinaryWriter
+    public partial class DSBinaryWriter : BinaryWriter
     {
-        public string FileName { get; private set; }
-
         public DSBinaryWriter(string fileName, Stream output)
             : base(output)
         {
@@ -29,49 +27,6 @@ namespace MeowDSIO
         {
             FileName = fileName;
         }
-
-        private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
-
-        public long Position { get => BaseStream.Position; set => BaseStream.Position = value; }
-        public long Length => BaseStream.Length;
-        public void Goto(long absoluteOffset) => BaseStream.Seek(absoluteOffset, SeekOrigin.Begin);
-        public void Jump(long relativeOffset) => BaseStream.Seek(relativeOffset, SeekOrigin.Current);
-        private Stack<long> StepStack = new Stack<long>();
-        private Stack<PaddedRegion> PaddedRegionStack = new Stack<PaddedRegion>();
-
-        public bool BigEndian = false;
-
-        public char StrEscapeChar = (char)0;
-
-        public void StepIn(long offset)
-        {
-            StepStack.Push(Position);
-            Goto(offset);
-        }
-
-        public void StepOut()
-        {
-            if (StepStack.Count == 0)
-                throw new InvalidOperationException("You cannot step out unless StepIn() was previously called on an offset.");
-
-            Goto(StepStack.Pop());
-        }
-
-        public void StepIntoPaddedRegion(long length, byte padding)
-        {
-            PaddedRegionStack.Push(new PaddedRegion(Position, length, padding));
-        }
-
-        public void StepOutOfPaddedRegion()
-        {
-            if (PaddedRegionStack.Count == 0)
-                throw new InvalidOperationException("You cannot step out of padded region unless inside of one " + 
-                    $"as a result of previously calling {nameof(StepIntoPaddedRegion)}().");
-
-            var deepestPaddedRegion = PaddedRegionStack.Pop();
-            deepestPaddedRegion.AdvanceWriterToEnd(this);
-        }
-
 
         public void WritePaddedStringShiftJIS(string str, int paddedRegionLength, byte? padding, bool forceTerminateAtMaxLength = false)
         {
@@ -96,162 +51,6 @@ namespace MeowDSIO
             }
 
             Write(jis);
-        }
-
-        public void DoAt(long offset, Action doAction)
-        {
-            StepIn(offset);
-            doAction();
-            StepOut();
-        }
-
-        #region Endianness
-
-        private byte[] PrepareBytes(byte[] b)
-        {
-            //Check if the BitConverter is expecting little endian
-            if (BitConverter.IsLittleEndian)
-            {
-                //It's expecting little endian so we must reverse our big endian bytes
-                Array.Reverse(b);
-            }
-            return b;
-        }
-
-        private void WritePreparedBytes(byte[] b)
-        {
-            base.Write(PrepareBytes(b));
-        }
-
-        public override void Write(char[] chars)
-        {
-            if (!BigEndian)
-            {
-                base.Write(chars);
-                return;
-            }
-
-            for (int i = 0; i < chars.Length; i++)
-            {
-                WritePreparedBytes(BitConverter.GetBytes(chars[i]));
-            }
-        }
-        public override void Write(long value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(uint value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(int value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(ushort value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(short value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(decimal value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            int[] chunks = Decimal.GetBits(value);
-            byte[] bytes = new byte[16];
-
-            for (int i = 0; i < 16; i += 4)
-            {
-                byte[] b = BitConverter.GetBytes(chunks[i / 4]);
-                for (int j = 0; j < 4; j++)
-                {
-                    bytes[i + j] = b[j];
-                }
-            }
-
-            WritePreparedBytes(bytes);
-        }
-        public override void Write(double value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(float value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
-        }
-        public override void Write(char ch)
-        {
-            if (!BigEndian)
-            {
-                base.Write(ch);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(ch));
-        }
-        private new void Write(string value)
-        {
-            //Make generic string write method unavailable to the outside world.
-            //Caller must instead call one of the more specific string write methods.
-        }
-        public override void Write(ulong value)
-        {
-            if (!BigEndian)
-            {
-                base.Write(value);
-                return;
-            }
-
-            WritePreparedBytes(BitConverter.GetBytes(value));
         }
 
         public void Write(Vector2 value)
@@ -290,6 +89,18 @@ namespace MeowDSIO
         {
             byte[] valueBytes = new byte[terminate ? str.Length + 1 : str.Length];
             Encoding.ASCII.GetBytes(str, 0, str.Length, valueBytes, 0);
+            Write(valueBytes);
+        }
+
+        public void WriteStringUnicode(string str, bool terminate)
+        {
+            byte[] valueBytes = new byte[terminate ? ((str.Length * 2) + 2) : (str.Length * 2)];
+
+            if (BigEndian)
+                Encoding.BigEndianUnicode.GetBytes(str, 0, str.Length, valueBytes, 0);
+            else
+                Encoding.Unicode.GetBytes(str, 0, str.Length, valueBytes, 0);
+
             Write(valueBytes);
         }
 
@@ -334,8 +145,5 @@ namespace MeowDSIO
 
             WriteDelimiter(delim);
         }
-
-        #endregion
-
     }
 }

@@ -88,7 +88,7 @@ namespace MeowDSIO
             }
         }
 
-        public static void Reload<T>(T data, IProgress<(int, int)> prog)
+        public static void Reload<T>(T data, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             if (data.FilePath == null)
@@ -106,7 +106,7 @@ namespace MeowDSIO
             }
         }
 
-        public static void Resave<T>(T data, IProgress<(int, int)> prog)
+        public static void Resave<T>(T data, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             if (data.FilePath == null)
@@ -125,7 +125,7 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog)
+        public static T LoadFromFile<T>(string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.Open))
@@ -140,7 +140,7 @@ namespace MeowDSIO
             }
         }
 
-        public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog)
+        public static void SaveToFile<T>(T data, string filePath, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var fileStream = File.Open(filePath, FileMode.OpenOrCreate))
@@ -155,7 +155,7 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog)
+        public static T LoadFromBytes<T>(byte[] bytes, string virtualUri, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var tempStream = new MemoryStream(bytes))
@@ -170,7 +170,7 @@ namespace MeowDSIO
             }
         }
 
-        public static byte[] SaveAsBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog)
+        public static byte[] SaveAsBytes<T>(T data, string virtualUri, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var tempStream = new MemoryStream())
@@ -188,7 +188,7 @@ namespace MeowDSIO
             }
         }
 
-        public static T LoadFromStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog)
+        public static T LoadFromStream<T>(Stream stream, string virtualUri, IProgress<(int, int)> prog = null)
             where T : DataFile, new()
         {
             using (var binaryReader = new DSBinaryReader(null, stream))

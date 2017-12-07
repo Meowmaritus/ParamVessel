@@ -144,7 +144,7 @@
 
         <DataTemplate x:Key="CellTemplateCheckBox">
             <CheckBox 
-                IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 FontWeight="Bold"
                 Height="24"
                 Foreground="White"

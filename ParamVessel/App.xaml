@@ -16,7 +16,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Selen.Wpf.SystemStyles;component/Styles.xaml"/>
                 <ResourceDictionary Source="Styles/MetroLuaTabs.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <sys:String x:Key="Version">Param Vessel - Version 1.1</sys:String>
+            <sys:String x:Key="Version">Param Vessel - Version 1.11</sys:String>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -155,7 +155,7 @@ namespace MeowDSIO.DataFiles
             bin.Write(Entries.Count);
 
             var OFF_NameEndOffset = bin.Position;
-            bin.Write(0xDEADD00Du); //Placeholder for name end offset
+            bin.Placeholder(); //Placeholder for name end offset
 
             bin.Write(Header.UnknownBytes01, BND3Header.UnknownBytes01_Length);
 
@@ -181,12 +181,12 @@ namespace MeowDSIO.DataFiles
             for (int i = 0; i < Entries.Count; i++)
             {
                 bin.Write(Entries[i].Size);
-                bin.Write(0xDEADD00Du); //Placeholder for data offset
+                bin.Placeholder(); //Placeholder for data offset
 
                 if (Header.Format != 0x00)
                 {
                     bin.Write(Entries[i].ID);
-                    bin.Write(0xDEADD00D); //Placeholder for name offset
+                    bin.Placeholder(); //Placeholder for name offset
                 }
 
                 if (Header.Format == 0x74 || Header.Format == 0x54 || Header.Format == 0x2E)

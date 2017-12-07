@@ -101,7 +101,7 @@ namespace MeowDSIO.DataFiles
             }
 
             //Placeholder - Strings start offset
-            bin.Write(0xDEADD00Du);
+            bin.Placeholder();
 
             //Placeholder - Data start offset
             bin.Write((ushort)0xDEAD);

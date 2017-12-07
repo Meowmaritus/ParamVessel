@@ -300,7 +300,7 @@ namespace MeowDSIO.DataFiles
             {
                 animationIdOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
                 bin.Write(anim.ID);
-                bin.Write(0xDEADD00D); //Pointer to animation will be inserted here.
+                bin.Placeholder(); //Pointer to animation will be inserted here.
             }
 
             //Animation Groups - Full Pass
@@ -328,7 +328,7 @@ namespace MeowDSIO.DataFiles
             {
                 animationOffsets.Add(anim.ID, (int)bin.BaseStream.Position);
                 bin.Write(anim.Anim.Events.Count);
-                bin.Write(0xDEADD00D); //PLACEHOLDER: animation event headers offset
+                bin.Placeholder(); //PLACEHOLDER: animation event headers offset
                 //Println($"Wrote Anim{anim.Key} event header offset placeholder value (0xDEADD00D) at address {(bin.BaseStream.Position-4):X8}");
                 bin.Write(0); //Null 1
                 bin.Write(0); //Null 2
@@ -342,9 +342,9 @@ namespace MeowDSIO.DataFiles
                         animationTimeConstantLists[anim.ID].Add(e.EndTime);
                 }
                 bin.Write(animationTimeConstantLists[anim.ID].Count); //# time constants in this anim
-                bin.Write(0xDEADD00D); //PLACEHOLDER: Time Constants offset
+                bin.Placeholder(); //PLACEHOLDER: Time Constants offset
                 //Println($"Wrote Anim{anim.Key} time constant offset placeholder value (0xDEADD00D) at address {(bin.BaseStream.Position-4):X8}");
-                bin.Write(0xDEADD00D); //PLACEHOLDER: Animation file struct offset
+                bin.Placeholder(); //PLACEHOLDER: Animation file struct offset
                 //Println($"Wrote Anim{anim.Key} anim file offset placeholder value (0xDEADD00D) at address {(bin.BaseStream.Position-4):X8}");
             }
 
@@ -423,7 +423,7 @@ namespace MeowDSIO.DataFiles
                         long currentEventHeaderStart = bin.Position;
                         bin.Write((int)animTimeConstantOffsets[anim.ID][e.StartTime]); //offset of start time in time constants.
                         bin.Write((int)animTimeConstantOffsets[anim.ID][e.EndTime]); //offset of end time in time constants.
-                        bin.Write(0xDEADD00D); //PLACEHOLDER: Event body
+                        bin.Placeholder(); //PLACEHOLDER: Event body
                         long currentEventHeaderLength = bin.Position - currentEventHeaderStart;
                         while (currentEventHeaderLength < EventHeaderSize)
                         {

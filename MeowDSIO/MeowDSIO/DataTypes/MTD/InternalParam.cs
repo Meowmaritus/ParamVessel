@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MTD
 {
-    public class InternalParam
+    public class InternalMtdParam
     {
         public int UnknownA01 { get; set; }
         public int UnknownA02 { get; set; }
@@ -44,9 +44,9 @@ namespace MeowDSIO.DataTypes.MTD
 
 
 
-        public static InternalParam Read(DSBinaryReader bin)
+        public static InternalMtdParam Read(DSBinaryReader bin)
         {
-            InternalParam p = new InternalParam();
+            InternalMtdParam p = new InternalMtdParam();
 
             p.UnknownA01 = bin.ReadInt32();
             p.UnknownA02 = bin.ReadInt32();
@@ -54,7 +54,7 @@ namespace MeowDSIO.DataTypes.MTD
             p.UnknownA04 = bin.ReadInt32();
 
 
-            bin.ReadDelimiter();
+            bin.ReadMtdDelimiter();
 
 
             p.Name = bin.ReadMtdName();
@@ -78,14 +78,14 @@ namespace MeowDSIO.DataTypes.MTD
             else if (valueType == typeof(Vector4))
                 p.Value = bin.ReadVector4();
 
-            bin.ReadDelimiter();
+            bin.ReadMtdDelimiter();
 
             p.UnknownD = bin.ReadBytes(UnknownD_Length);
 
             return p;
         }
 
-        public static void Write(DSBinaryWriter bin, InternalParam p)
+        public static void Write(DSBinaryWriter bin, InternalMtdParam p)
         {
             bin.Write(p.UnknownA01);
             bin.Write(p.UnknownA02);

@@ -212,7 +212,7 @@ namespace MeowDSIO.DataFiles
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
         {
             // Placeholder - file length
-            bin.Write(0xDEADD00Du);
+            bin.Placeholder();
             // First entry offset
             bin.Write((ushort)0x30);
             bin.Write(Unknown1);

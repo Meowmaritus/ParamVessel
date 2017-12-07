@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.DataTypes.MTD
 {
-    public class ExternalParam : Data
+    public class ExternalMtdParam : Data
     {
         public int UnknownA01 { get; set; }
         public int UnknownA02 { get; set; }
@@ -16,9 +16,9 @@ namespace MeowDSIO.DataTypes.MTD
         public int UnknownB { get; set; }
         public int ShaderDataIndex { get; set; }
 
-        public static ExternalParam Read(DSBinaryReader bin)
+        public static ExternalMtdParam Read(DSBinaryReader bin)
         {
-            var p = new ExternalParam();
+            var p = new ExternalMtdParam();
 
             p.UnknownA01 = bin.ReadInt32();
             p.UnknownA02 = bin.ReadInt32();
@@ -26,14 +26,14 @@ namespace MeowDSIO.DataTypes.MTD
             p.UnknownA04 = bin.ReadInt32();
 
 
-            bin.ReadDelimiter();
+            bin.ReadMtdDelimiter();
 
 
             p.Name = bin.ReadMtdName();
             p.UnknownB = bin.ReadInt32();
 
 
-            bin.ReadDelimiter();
+            bin.ReadMtdDelimiter();
 
 
             p.ShaderDataIndex = bin.ReadInt32();
@@ -41,7 +41,7 @@ namespace MeowDSIO.DataTypes.MTD
             return p;
         }
 
-        public static void Write(DSBinaryWriter bin, ExternalParam p)
+        public static void Write(DSBinaryWriter bin, ExternalMtdParam p)
         {
 
             bin.Write(p.UnknownA01);

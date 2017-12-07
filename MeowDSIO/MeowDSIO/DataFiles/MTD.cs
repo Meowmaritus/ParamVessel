@@ -40,12 +40,12 @@ namespace MeowDSIO.DataFiles
         public const int UnknownG_Length = 32;
         public byte[] UnknownG { get; set; } = new byte[UnknownG_Length];
 
-        public List<InternalParam> InternalParams { get; set; } = new List<InternalParam>();
+        public List<InternalMtdParam> InternalParams { get; set; } = new List<InternalMtdParam>();
 
         public const int UnknownH_Length = 4;
         public byte[] UnknownH { get; set; } = new byte[UnknownH_Length];
 
-        public List<ExternalParam> ExternalParams { get; set; } = new List<ExternalParam>();
+        public List<ExternalMtdParam> ExternalParams { get; set; } = new List<ExternalMtdParam>();
 
         public int UnknownI01 { get; set; } = 0;
         public int UnknownI02 { get; set; } = 0;
@@ -125,7 +125,7 @@ namespace MeowDSIO.DataFiles
             int internalParamCount = bin.ReadInt32();
             for (int i = 0; i < internalParamCount; i++)
             {
-                InternalParams.Add(InternalParam.Read(bin));
+                InternalParams.Add(InternalMtdParam.Read(bin));
             }
 
 
@@ -136,7 +136,7 @@ namespace MeowDSIO.DataFiles
             int externalParamCount = bin.ReadInt32();
             for (int i = 0; i < externalParamCount; i++)
             {
-                ExternalParams.Add(ExternalParam.Read(bin));
+                ExternalParams.Add(ExternalMtdParam.Read(bin));
             }
 
             UnknownI01 = bin.ReadInt32();
@@ -155,7 +155,7 @@ namespace MeowDSIO.DataFiles
             bin.Write(UnknownA);
 
             var LOC_FileSize = bin.Position;
-            bin.Write(0xDEADD00Du);
+            bin.Placeholder();
 
             bin.Write(UnknownB);
             bin.Write(UnknownC);
@@ -177,7 +177,7 @@ namespace MeowDSIO.DataFiles
 
             var LOC_DataSize = bin.Position;
 
-            bin.Write(0xDEADD00Du);
+            bin.Placeholder();
 
             bin.Write(UnknownF01);
             bin.Write(UnknownF02);
@@ -192,7 +192,7 @@ namespace MeowDSIO.DataFiles
 
             foreach (var p in InternalParams)
             {
-                InternalParam.Write(bin, p);
+                InternalMtdParam.Write(bin, p);
             }
 
             bin.Write(UnknownH, UnknownH_Length);
@@ -201,7 +201,7 @@ namespace MeowDSIO.DataFiles
 
             foreach (var p in ExternalParams)
             {
-                ExternalParam.Write(bin, p);
+                ExternalMtdParam.Write(bin, p);
             }
 
             bin.Write(UnknownI01);
