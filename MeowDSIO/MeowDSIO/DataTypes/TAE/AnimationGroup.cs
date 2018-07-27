@@ -21,5 +21,10 @@ namespace MeowDSIO.DataTypes.TAE
         {
             DisplayIndex = dispIndex;
         }
+
+        public override string ToString()
+        {
+            return $"{FirstID} - {LastID}";
+        }
     }
 }

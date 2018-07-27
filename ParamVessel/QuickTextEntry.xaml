@@ -1,0 +1,17 @@
+﻿<Metro:MetroWindow x:Class="MeowsBetterParamEditor.QuickTextEntry"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MeowsBetterParamEditor"
+        xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="QuickTextEntry" Height="93.266" Width="800"
+                   Background="#1C1C1C" 
+                   >
+    <Grid>
+        <TextBlock x:Name="TextBlockPrompt" Foreground="{StaticResource Foreground}" HorizontalAlignment="Stretch" Margin="10,10,10,0" TextWrapping="Wrap" Text="TextBlockPrompt" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBoxEntry"  HorizontalAlignment="Stretch" Margin="10,31,90,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsTabStop="True" TabIndex="0" KeyDown="TextBoxEntry_KeyDown"/>
+        <Button x:Name="ButtonOK" Content="OK" HorizontalAlignment="Right" Margin="0,31,10,0" VerticalAlignment="Top" Width="75" IsTabStop="False" Click="ButtonOK_Click"/>
+    </Grid>
+</Metro:MetroWindow>

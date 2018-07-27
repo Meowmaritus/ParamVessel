@@ -72,9 +72,6 @@ namespace MeowDSIO.DataFiles
                     Goals[i].LogicInterruptName = null;
                 }
             }
-
-            //TODO: Add real progress.
-            prog.Report((1, 1)); //PLACEHOLDER
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
@@ -133,9 +130,6 @@ namespace MeowDSIO.DataFiles
             bin.Position = OFF_AfterStrings;
 
             bin.Pad(0x10);
-
-            //TODO: Add real progress.
-            prog.Report((1, 1)); //PLACEHOLDER
         }
     }
 }

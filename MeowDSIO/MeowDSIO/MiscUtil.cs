@@ -63,5 +63,46 @@ namespace MeowDSIO
 
             return result.Value;
         }
+
+        public static int AddTolistAndReturnIndex<T>(List<T> list, T item)
+        {
+            if (list.Contains(item))
+            {
+                return list.IndexOf(item);
+            }
+            else
+            {
+                list.Add(item);
+                return list.Count - 1;
+            }
+        }
+
+        public static void IterateIndexList<T>(List<int> indexList, List<T> itemListDest, T sourceItem)
+        {
+            IterateIndexList(indexList, itemListDest, new T[] { sourceItem });
+        }
+
+        public static void IterateIndexList<T>(List<int> indexList, List<T> itemListDest, IEnumerable<T> sourceItems)
+        {
+            foreach (var item in sourceItems)
+            {
+                indexList.Add(AddTolistAndReturnIndex(itemListDest, item));
+            }
+        }
+
+        private static readonly char[] _dirSep = new char[] { '\\', '/' };
+        public static string GetFileNameWithoutDirectoryOrExtension(string fileName)
+        {
+            if (fileName.EndsWith("\\") || fileName.EndsWith("/"))
+                fileName = fileName.TrimEnd(_dirSep);
+
+            if (fileName.Contains("\\") || fileName.Contains("/"))
+                fileName = fileName.Substring(fileName.LastIndexOfAny(_dirSep) + 1);
+
+            if (fileName.Contains("."))
+                fileName = fileName.Substring(0, fileName.LastIndexOf('.'));
+
+            return fileName;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using MeowDSIO;
 using MeowDSIO.DataFiles;
 using MeowDSIO.DataTypes.PARAM;
+using MeowDSIO.DataTypes.PARAMDEF;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,12 @@ namespace MeowsBetterParamEditor
 
             //DEBUG
             //PARAMDATA.DEBUG_RestoreBackupsLoadResave();
+
+#if REMASTER
+            Title += " (DS1R-Only Version)";
+#else
+            Title += " (PTDE-Only Version)";
+#endif
         }
 
         private void SetLoadingMode(bool isLoading)
@@ -59,6 +66,20 @@ namespace MeowsBetterParamEditor
 
         private async Task BrowseForInterrootDialog(Action<bool> setIsLoading)
         {
+#if REMASTER
+            var browseDialog = new OpenFileDialog()
+            {
+                AddExtension = false,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Multiselect = false,
+                FileName = "DarkSoulsRemastered.exe",
+                Filter = "Dark Souls Remastered EXEs (Usually DarkSoulsRemastered.exe)|*.exe",
+                ShowReadOnly = false,
+                Title = "Choose your DarkSoulsRemastered.exe file...",
+                ValidateNames = true
+            };
+#else
             var browseDialog = new OpenFileDialog()
             {
                 AddExtension = false,
@@ -66,11 +87,14 @@ namespace MeowsBetterParamEditor
                 CheckPathExists = true,
                 Multiselect = false,
                 FileName = "DARKSOULS.exe",
-                Filter = "Dark Souls EXEs (Usually DARKSOULS.exe)|*.exe",
+                Filter = "Dark Souls: PTDE EXEs (Usually DARKSOULS.exe)|*.exe",
                 ShowReadOnly = false,
                 Title = "Choose your DARKSOULS.exe file...",
                 ValidateNames = true
             };
+#endif
+
+
 
             if ((browseDialog.ShowDialog() ?? false) == true)
             {
@@ -85,6 +109,13 @@ namespace MeowsBetterParamEditor
                 {
                     var sb = new StringBuilder();
 
+#if REMASTER
+                    sb.AppendLine(@"Directory of EXE chosen did not include the following directories/files which are required:");
+                    sb.AppendLine(@" - '.\param\DrawParam\'");
+                    sb.AppendLine(@" - '.\param\GameParam\'");
+                    sb.AppendLine(@" - '.\param\GameParam\GameParam.parambnd.dcx'");
+                    sb.AppendLine(@" - '.\paramdef\paramdef.paramdefbnd.dcx'");
+#else
                     sb.AppendLine(@"Directory of EXE chosen did not include the following directories/files which are required:");
                     sb.AppendLine(@" - '.\param\DrawParam\'");
                     sb.AppendLine(@" - '.\param\GameParam\'");
@@ -95,11 +126,9 @@ namespace MeowsBetterParamEditor
                     {
                         sb.AppendLine();
                         sb.AppendLine();
-                        sb.AppendLine("This installation does not appear to be unpacked with " +
+                        sb.AppendLine("Warning: This installation does not appear to be unpacked with " +
                             "UnpackDarkSoulsForModding because it meets one or more of the " +
-                            "criteria below (please note that it is only a suggestion and not " +
-                            "required for this tool to function; only the above criteria is " +
-                            "required to be met in order to use this tool).");
+                            "criteria below:");
 
                         sb.AppendLine(@" - '.\unpackDS-backup' does not exist.");
                         sb.AppendLine(@" - '.\dvdbnd0.bdt' exists.");
@@ -111,6 +140,11 @@ namespace MeowsBetterParamEditor
                         sb.AppendLine(@" - '.\dvdbnd2.bhd5' exists.");
                         sb.AppendLine(@" - '.\dvdbnd3.bhd5' exists.");
                     }
+#endif
+
+
+
+
 
                     MessageBox.Show(
                         sb.ToString(), 
@@ -137,12 +171,22 @@ namespace MeowsBetterParamEditor
 
         private bool CheckInterrotDirValid(string dir)
         {
+#if REMASTER
+            return
+                Directory.Exists(IOHelper.Frankenpath(dir, @"param\DrawParam")) &&
+                Directory.Exists(IOHelper.Frankenpath(dir, @"param\GameParam")) &&
+                Directory.Exists(IOHelper.Frankenpath(dir, @"paramdef")) &&
+                File.Exists(IOHelper.Frankenpath(dir, @"param\GameParam\GameParam.parambnd.dcx")) &&
+                File.Exists(IOHelper.Frankenpath(dir, @"paramdef\paramdef.paramdefbnd.dcx"));
+#else
             return
                 Directory.Exists(IOHelper.Frankenpath(dir, @"param\DrawParam")) &&
                 Directory.Exists(IOHelper.Frankenpath(dir, @"param\GameParam")) &&
                 Directory.Exists(IOHelper.Frankenpath(dir, @"paramdef")) &&
                 File.Exists(IOHelper.Frankenpath(dir, @"param\GameParam\GameParam.parambnd")) &&
                 File.Exists(IOHelper.Frankenpath(dir, @"paramdef\paramdef.paramdefbnd"));
+#endif
+
         }
 
         //private void RANDOM_DEBUG_TESTING()
@@ -277,6 +321,8 @@ namespace MeowsBetterParamEditor
             if (!jpTextOnly)
             {
                 sb.AppendLine();
+                sb.AppendLine($"{indentPrefix}{cell.Def.Name}");
+                sb.AppendLine();
                 sb.AppendLine($"{indentPrefix}Min: {cell.Def.Min}");
                 sb.AppendLine($"{indentPrefix}Max: {cell.Def.Max}");
                 sb.AppendLine($"{indentPrefix}Default: {cell.Def.DefaultValue}");
@@ -309,23 +355,37 @@ namespace MeowsBetterParamEditor
         {
             PARAMDATA.LoadConfig();
 
-            if (!string.IsNullOrWhiteSpace(PARAMDATA.Config?.InterrootPath))
+            if (!string.IsNullOrWhiteSpace(PARAMDATA.Config?.InterrootPath) && CheckInterrotDirValid(PARAMDATA.Config?.InterrootPath))
             {
                 await PARAMDATA.LoadParamsInOtherThread(SetLoadingMode);
             }
             else
             {
-                if (MessageBox.Show("Note: A Dark Souls installation unpacked by the mod " +
-                    "'UnpackDarkSoulsForModding' by HotPocketRemix is >>>REQUIRED<<<." +
-                    "\n" +
-                    @"Please navigate to your '.\DATA\DARKSOULS.exe' file." +
-                    "Once the inital setup is performed, the path will be saved." +
+#if REMASTER
+                if (MessageBox.Show("Note: ORIGINAL DARK SOULS: PREPARE TO DIE EDITION IS NOT COMPATIBLE WITH THIS VERSION OF PARAM VESSEL." +
+                    "\n\n" +
+                    @"Please navigate to your 'DARK SOULS REMASTERED\DarkSoulsRemastered.exe' file." +
+                    "\n\nOnce the inital setup is performed, the path will be saved." +
                     "\nYou may press cancel to continue without selecting the path but the GUI will " +
                     "be blank until you go to 'File -> Select Dark Souls Directory...'",
                     "Initial Setup", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
                 {
                     await BrowseForInterrootDialog(SetLoadingMode);
                 }
+#else
+                if (MessageBox.Show("Note: DARK SOULS REMASTERED IS NOT COMPATIBLE WITH THIS VERSION OF PARAM VESSEL." +
+                    "\nYour Dark Souls: Prepare to Die Edition installation MUST be unpacked by UnpackDarkSoulsForModding by HotPocketRemix.\n\n" +
+                    @"Please navigate to your 'Dark Souls Prepare to Die Edition\DATA\DARKSOULS.exe' file." +
+                    "\n\nOnce the inital setup is performed, the path will be saved." +
+                    "\nYou may press cancel to continue without selecting the path but the GUI will " +
+                    "be blank until you go to 'File -> Select Dark Souls Directory...'",
+                    "Initial Setup", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
+                {
+                    await BrowseForInterrootDialog(SetLoadingMode);
+                }
+#endif
+
+
             }
 
             MainTabs.Items.Refresh();
@@ -452,6 +512,10 @@ namespace MeowsBetterParamEditor
 
         private void MenuPatchParamDefs_Click(object sender, RoutedEventArgs e)
         {
+#if REMASTER
+            MessageBox.Show("This action is only available on the PTDE version.", "Not Supported", MessageBoxButton.OK, MessageBoxImage.Stop);
+            return;
+#else
             if (MessageBox.Show("This modification will replace the Japanese display names of the variables" +
                 " in the ParamDefs with their internal variable names, which are in English. " +
                 "\nThese display names are used in the Dark Souls debug menu's '[PARAM MAN]' submenu. " +
@@ -488,9 +552,239 @@ namespace MeowsBetterParamEditor
                             "The file has been replaced with the default vanilla file." + "\n\n" + ex.Message);
                     }
                 }
+            }
+#endif
+        }
+
+        private void MenuRandomize_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            var rand = new Random();
+            foreach (var p in PARAMDATA.Params)
+            {
+                var entryIdPool = new List<int>();
+
+                for (int i = 0; i < p.Value.Entries.Count; i++)
+                {
+                    entryIdPool.Add(Convert.ToInt32(p.Value.Entries[i].ID));
+                }
+
+                for (int i = 0; i < p.Value.Entries.Count; i++)
+                {
+                    var newIdIndex = rand.Next(0, entryIdPool.Count);
+                    p.Value.Entries[i].ID = entryIdPool[newIdIndex];
+
+                    entryIdPool.RemoveAt(newIdIndex);
+                }
 
 
             }
+
+            
+        }
+
+        private void ParamRowDuplicate(/*bool newNameAndID*/)
+        {
+            var selectedParamRow = ParamEntryList.SelectedItem as ParamRow;
+            var selectedParam = MainTabs.SelectedItem as PARAMRef;
+
+            if (selectedParam == null || selectedParamRow == null)
+                return;
+
+            var newParamRow = new ParamRow();
+
+            if (false /*newNameAndID*/)
+            {
+                //var nameEntry = new QuickTextEntry();
+                //nameEntry.Title = "New Param";
+                //nameEntry.TextBlockPrompt.Text = "Please input the desired"
+                
+            }
+            else
+            {
+                newParamRow.ID = selectedParamRow.ID;
+                newParamRow.Name = selectedParamRow.Name;
+            }
+            
+
+            newParamRow.SaveDefaultValuesToRawData(selectedParam.Value);
+            newParamRow.LoadValuesFromRawData(selectedParam.Value);
+
+            foreach (var cell in newParamRow.Cells)
+            {
+                cell.Value = selectedParamRow[cell.Def.Name];
+            }
+
+            selectedParam.Value.Entries.Insert(selectedParam.Value.Entries.IndexOf(selectedParamRow), newParamRow);
+        }
+
+        private void ContextMenuParamRow_Duplicate_ExactCopy_Click(object sender, RoutedEventArgs e)
+        {
+            ParamRowDuplicate(/*false*/);
+        }
+
+        private void ParamRowCopyBytes()
+        {
+            var selectedParamRow = ParamEntryList.SelectedItem as ParamRow;
+            var selectedParam = MainTabs.SelectedItem as PARAMRef;
+
+            if (selectedParam == null || selectedParamRow == null)
+                return;
+
+            selectedParamRow.ReInitRawData(selectedParam.Value);
+            selectedParamRow.SaveValuesToRawData(selectedParam.Value);
+            var sb = new StringBuilder();
+            for (int i = 0; i < selectedParamRow.RawData.Length; i++)
+            {
+                if (i > 0)
+                    sb.Append(" ");
+
+                sb.Append(selectedParamRow.RawData[i].ToString("X2"));
+            }
+            Clipboard.SetText(sb.ToString(), TextDataFormat.UnicodeText);
+            selectedParamRow.ClearRawData();
+        }
+
+        private void ParamRowPasteBytes()
+        {
+            var selectedParamRow = ParamEntryList.SelectedItem as ParamRow;
+            var selectedParam = MainTabs.SelectedItem as PARAMRef;
+
+            if (selectedParam == null || selectedParamRow == null)
+                return;
+
+            try
+            {
+                var hexBytes = Clipboard.GetText(TextDataFormat.UnicodeText)
+                    .Split(' ')
+                    .Select(x => byte.Parse(x, System.Globalization.NumberStyles.HexNumber))
+                    .ToArray();
+
+                if (hexBytes.Length == selectedParam.Value.EntrySize)
+                {
+                    PARAMDATA.IsParamRowClipboardValid = true;
+                }
+
+                selectedParamRow.RawData = hexBytes;
+                selectedParamRow.LoadValuesFromRawData(selectedParam.Value);
+
+                ParamEntryList.SelectedItem = null;
+                ParamEntryList.SelectedItem = selectedParamRow;
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void ParamRowDelete()
+        {
+            var selectedParamRow = ParamEntryList.SelectedItem as ParamRow;
+            var selectedParam = MainTabs.SelectedItem as PARAMRef;
+
+            if (selectedParam == null || selectedParamRow == null)
+                return;
+
+            var result = MessageBox.Show($"Are you sure you wish to delete the selected entry " +
+                $"({selectedParamRow.ID}: {selectedParamRow.Name})?", "Delete Entry?", 
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var indexOfSelected = selectedParam.Value.Entries.IndexOf(selectedParamRow);
+                selectedParam.Value.Entries.Remove(selectedParamRow);
+                if (indexOfSelected >= 0 && indexOfSelected < selectedParam.Value.Entries.Count)
+                {
+                    ParamEntryList.SelectedItem = selectedParam.Value.Entries[indexOfSelected];
+                }
+            }
+        }
+
+        private void ContextMenuParamRow_CopyAllValues_Click(object sender, RoutedEventArgs e)
+        {
+            ParamRowCopyBytes();
+        }
+
+        private void ContextMenuParamRow_PasteAllValues_Click(object sender, RoutedEventArgs e)
+        {
+            ParamRowPasteBytes();
+        }
+
+        private void ContextMenuParamRow_Opened(object sender, RoutedEventArgs e)
+        {
+            var selectedParamRow = ParamEntryList.SelectedItem as ParamRow;
+            var selectedParam = MainTabs.SelectedItem as PARAMRef;
+
+            if (selectedParam == null || selectedParamRow == null)
+                return;
+
+            if (Clipboard.ContainsText(TextDataFormat.UnicodeText))
+            {
+                try
+                {
+                    var hexBytes = Clipboard.GetText(TextDataFormat.UnicodeText)
+                        .Split(' ')
+                        .Select(x => byte.Parse(x, System.Globalization.NumberStyles.HexNumber))
+                        .ToArray();
+
+                    if (hexBytes.Length == selectedParam.Value.EntrySize)
+                    {
+                        PARAMDATA.IsParamRowClipboardValid = true;
+                    }
+                    else
+                    {
+                        PARAMDATA.IsParamRowClipboardValid = false;
+                    }
+
+                    
+                }
+                catch
+                {
+                    PARAMDATA.IsParamRowClipboardValid = false;
+                }
+                
+            }
+        }
+
+        private void ParamEntryList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+
+                }
+                else
+                {
+                    if (e.Key == Key.D)
+                    {
+                        ParamRowDuplicate();
+                    }
+                    else if (e.Key == Key.C)
+                    {
+                        ParamRowCopyBytes();
+                    }
+                    else if (e.Key == Key.V)
+                    {
+                        ParamRowPasteBytes();
+                    }
+                }
+                
+            }
+            else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                if (e.Key == Key.Delete)
+                {
+                    ParamRowDelete();
+                }
+            }
+
+        }
+
+        private void ContextMenuParamRow_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            ParamRowDelete();
         }
     }
 }

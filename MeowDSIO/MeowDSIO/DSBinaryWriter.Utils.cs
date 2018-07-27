@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeowDSIO.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace MeowDSIO
 {
     public partial class DSBinaryWriter : BinaryWriter
     {
-        private static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
+        internal static Encoding ShiftJISEncoding = Encoding.GetEncoding("shift_jis");
 
         // Now with 100% less 0DD0ADDE
         public static readonly byte[] PLACEHOLDER_32BIT = new byte[] { 0xDE, 0xAD, 0xD0, 0x0D };
@@ -29,6 +30,43 @@ namespace MeowDSIO
         public bool BigEndian = false;
 
         public char StrEscapeChar = (char)0;
+
+        private long msbStringStart = -1;
+
+        public void StartMSBStrings()
+        {
+            msbStringStart = Position;
+        }
+
+        public void EndMSBStrings(int blockSize)
+        {
+            if (msbStringStart < 0)
+            {
+                throw new DSWriteException(this, $"Tried to call .{nameof(EndMSBStrings)}() without calling .{nameof(StartMSBStrings)}() first.");
+            }
+
+            int currentBlockLength = (int)(Position - msbStringStart);
+
+            if (currentBlockLength < blockSize)
+            {
+                byte[] pad = new byte[blockSize - currentBlockLength];
+                Write(pad);
+            }
+
+            msbStringStart = -1;
+        }
+
+        public void StepInMSB(int offset)
+        {
+            if (currentMsbStructOffset >= 0)
+            {
+                StepIn(currentMsbStructOffset + offset);
+            }
+            else
+            {
+                throw new DSWriteException(this, $"Attempted to use .{nameof(StepInMSB)}() without running .{nameof(StartMsbStruct)}() first.");
+            }
+        }
 
         public void StepIn(long offset)
         {
@@ -66,23 +104,31 @@ namespace MeowDSIO
             StepOut();
         }
 
-        public long Placeholder(string markerName = null)
+        public long Placeholder(string markerName = null, bool allowOverride = true)
         {
-            var label = Label(markerName);
+            var label = Label(markerName, allowOverride);
             Write(PLACEHOLDER_32BIT);
             return label;
         }
 
-        public long Label(string markerName = null)
+        public long Label(string markerName = null, bool allowOverride = true)
         {
             var labelOffset = Position;
 
             if (markerName != null)
             {
                 if (MarkerDict.ContainsKey(markerName))
-                    MarkerDict[markerName] = labelOffset;
+                {
+                    if (allowOverride)
+                        MarkerDict[markerName] = labelOffset;
+                    else
+                        throw new DSWriteException(this, $"{nameof(DSBinaryWriter)}.{nameof(Label)} - bool {nameof(allowOverride)} set to FALSE but a Label with the same name has already been added.");
+                }
                 else
+                {
                     MarkerDict.Add(markerName, labelOffset);
+                }
+                
             }
 
             return labelOffset;
@@ -104,25 +150,9 @@ namespace MeowDSIO
             }
         }
 
-        public void StepIn(string markerName)
-        {
-            if (markerName == null)
-                throw new ArgumentNullException(nameof(markerName));
-
-            if (MarkerDict.ContainsKey(markerName))
-            {
-                StepIn(MarkerDict[markerName]);
-            }
-            else
-            {
-                throw new ArgumentException("No DSBinaryWriter Marker was registered " +
-                    $"with the name '{markerName}'.", nameof(markerName));
-            }
-        }
-
         public void Replace(string markerName, int replaceMarkerVal)
         {
-            StepIn(markerName);
+            StepIn(MarkerDict[markerName]);
             Write(replaceMarkerVal);
             StepOut();
         }

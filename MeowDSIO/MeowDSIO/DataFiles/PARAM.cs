@@ -5,12 +5,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace MeowDSIO.DataFiles
 {
-    public class PARAM : DataFile
+    public class PARAM : DataFile, IList<ParamRow>
     {
-        public string Name { get; set; } = null;
+        public string ID { get; set; } = null;
         public ObservableCollection<ParamRow> Entries { get; set; }
         public ushort Unknown1 { get; set; }
         public ushort Unknown2 { get; set; }
@@ -42,7 +43,7 @@ namespace MeowDSIO.DataFiles
             ushort rowCount = bin.ReadUInt16();
 
             byte namePad = 0;
-            Name = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
+            ID = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
 
             Unknown3 = bin.ReadInt32();
 
@@ -109,7 +110,7 @@ namespace MeowDSIO.DataFiles
             bin.Write(Unknown1);
             bin.Write(Unknown2);
             bin.Write((ushort)Entries.Count);
-            bin.WritePaddedStringShiftJIS(Name, 0x20, null);
+            bin.WritePaddedStringShiftJIS(ID, 0x20, null);
             bin.Write(Unknown3);
 
             var OFF_RowHeaders = bin.Position;
@@ -163,6 +164,62 @@ namespace MeowDSIO.DataFiles
             bin.Position = bin.Length;
 
             //bin.Pad(0x14);
+        }
+
+        public int IndexOf(ParamRow item)
+        {
+            return ((IList<ParamRow>)Entries).IndexOf(item);
+        }
+
+        public void Insert(int index, ParamRow item)
+        {
+            ((IList<ParamRow>)Entries).Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            ((IList<ParamRow>)Entries).RemoveAt(index);
+        }
+
+        public ParamRow this[int index] { get => ((IList<ParamRow>)Entries)[index]; set => ((IList<ParamRow>)Entries)[index] = value; }
+
+        public void Add(ParamRow item)
+        {
+            ((IList<ParamRow>)Entries).Add(item);
+        }
+
+        public void Clear()
+        {
+            ((IList<ParamRow>)Entries).Clear();
+        }
+
+        public bool Contains(ParamRow item)
+        {
+            return ((IList<ParamRow>)Entries).Contains(item);
+        }
+
+        public void CopyTo(ParamRow[] array, int arrayIndex)
+        {
+            ((IList<ParamRow>)Entries).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(ParamRow item)
+        {
+            return ((IList<ParamRow>)Entries).Remove(item);
+        }
+
+        public int Count => ((IList<ParamRow>)Entries).Count;
+
+        public bool IsReadOnly => ((IList<ParamRow>)Entries).IsReadOnly;
+
+        public IEnumerator<ParamRow> GetEnumerator()
+        {
+            return ((IList<ParamRow>)Entries).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IList<ParamRow>)Entries).GetEnumerator();
         }
     }
 }

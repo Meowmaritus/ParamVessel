@@ -66,9 +66,16 @@ namespace MeowsBetterParamEditor
         public string ParamFolder
             => IOHelper.Frankenpath(InterrootPath, "param\\");
 
+#if REMASTER
+        [JsonIgnore]
+        public string ParamDefBndPath
+            => IOHelper.Frankenpath(InterrootPath, "paramdef\\paramdef.paramdefbnd.dcx");
+#else
         [JsonIgnore]
         public string ParamDefBndPath
             => IOHelper.Frankenpath(InterrootPath, "paramdef\\paramdef.paramdefbnd");
+#endif
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;

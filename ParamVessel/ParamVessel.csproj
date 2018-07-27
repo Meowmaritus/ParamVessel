@@ -15,6 +15,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,6 +40,27 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Soul_Vessel_Sqr.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugR|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\DebugR\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;REMASTER</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseR|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ReleaseR\</OutputPath>
+    <DefineConstants>TRACE;REMASTER</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura, Version=1.6.2.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
@@ -100,6 +122,9 @@
     <Compile Include="ParamCellEditTemplateSelector.cs" />
     <Compile Include="ParamCellValueTemplateSelector.cs" />
     <Compile Include="ParamDataGridTemplateColumn.cs" />
+    <Compile Include="QuickTextEntry.xaml.cs">
+      <DependentUpon>QuickTextEntry.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TabControlEx.cs" />
     <Compile Include="UserConfig.cs" />
     <Page Include="About.xaml">
@@ -118,6 +143,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="QuickTextEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\MetroLuaTabs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -144,7 +173,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="EmbeddedResources\paramdef.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResources\paramdef_frpg.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResources\paramdef_sprj.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResources\paramdef_frpg_x64.paramdefbnd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

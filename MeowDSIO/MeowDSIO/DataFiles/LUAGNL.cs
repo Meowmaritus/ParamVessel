@@ -43,9 +43,6 @@ namespace MeowDSIO.DataFiles
 
                 GlobalVariableNames.Add(nextString);
             }
-
-            //TODO: Add real progress.
-            prog.Report((1, 1)); //PLACEHOLDER
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
@@ -74,9 +71,6 @@ namespace MeowDSIO.DataFiles
             bin.Position = bin.Length;
 
             bin.Pad(0x10);
-
-            //TODO: Add real progress.
-            prog.Report((1, 1)); //PLACEHOLDER
         }
     }
 }

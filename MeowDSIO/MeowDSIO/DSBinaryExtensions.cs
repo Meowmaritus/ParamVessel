@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,7 +47,7 @@ namespace MeowDSIO
             byte g = bin.ReadByte();
             byte b = bin.ReadByte();
             byte a = bin.ReadByte();
-            return Color.FromArgb(a, r, g, b);
+            return new Color(r, g, b, a);
         }
 
         public static void WriteColor(this DSBinaryWriter bin, Color v)
@@ -70,25 +70,6 @@ namespace MeowDSIO
             bin.Write(v.X);
             bin.Write(v.Y);
             bin.Write(v.Z);
-        }
-
-
-        public static Vector3 ReadPackedNormal(this DSBinaryReader bin)
-        {
-            byte x = bin.ReadByte();
-            byte y = bin.ReadByte();
-            byte z = bin.ReadByte();
-            byte _padding = bin.ReadByte();
-            return new Vector3((x - 127.0f) / 127.0f, (y - 127.0f) / 127.0f, (z - 127.0f) / 127.0f);
-        }
-
-        public static void WritePackedNormal(this DSBinaryWriter bin, Vector3 v)
-        {
-            v = Vector3.Normalize(v);
-            bin.Write((byte)((v.X * 127.0f) + 127.0f));
-            bin.Write((byte)((v.Y * 127.0f) + 127.0f));
-            bin.Write((byte)((v.Z * 127.0f) + 127.0f));
-            bin.Write((byte)0x7F);
         }
     }
 }

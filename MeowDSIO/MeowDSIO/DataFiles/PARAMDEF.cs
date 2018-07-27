@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace MeowDSIO.DataFiles
 {
-    public class PARAMDEF : DataFile
+    public class PARAMDEF : DataFile, IList<ParamDefEntry>
     {
-        public string Name { get; set; } = null;
+        public string ID { get; set; } = null;
         public ushort Unknown1 { get; set; } = 1;
         public ushort Unknown2 { get; set; } = 0;
         public List<ParamDefEntry> Entries { get; set; } = new List<ParamDefEntry>();
@@ -107,7 +108,7 @@ namespace MeowDSIO.DataFiles
 
             bin.CheckConsumeValue("Entry length", bin.ReadUInt16, ENTRY_LENGTH);
 
-            Name = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
+            ID = bin.ReadPaddedStringShiftJIS(0x20, padding: null);
 
             Unknown2 = bin.CheckConsumeValue($"{nameof(Unknown2)} (HeaderTerminator?)", bin.ReadUInt16, (ushort)0);
             bin.CheckConsumeValue("Relative Offset To Offset Of Description", bin.ReadUInt16, DESC_OFFSET_OFFSET);
@@ -219,7 +220,7 @@ namespace MeowDSIO.DataFiles
             bin.Write((ushort)Entries.Count);
             // Entry length
             bin.Write(ENTRY_LENGTH);
-            bin.WritePaddedStringShiftJIS(Name, 0x20, padding: 0x20);
+            bin.WritePaddedStringShiftJIS(ID, 0x20, padding: 0x20);
             bin.Write(Unknown2);
             // The offset relative to each entry's start that points to that entry's description offset value
             bin.Write(DESC_OFFSET_OFFSET);
@@ -262,6 +263,62 @@ namespace MeowDSIO.DataFiles
 
                 prog?.Report((Entries.Count + i, Entries.Count * 2));
             }
+        }
+
+        public int IndexOf(ParamDefEntry item)
+        {
+            return ((IList<ParamDefEntry>)Entries).IndexOf(item);
+        }
+
+        public void Insert(int index, ParamDefEntry item)
+        {
+            ((IList<ParamDefEntry>)Entries).Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            ((IList<ParamDefEntry>)Entries).RemoveAt(index);
+        }
+
+        public ParamDefEntry this[int index] { get => ((IList<ParamDefEntry>)Entries)[index]; set => ((IList<ParamDefEntry>)Entries)[index] = value; }
+
+        public void Add(ParamDefEntry item)
+        {
+            ((IList<ParamDefEntry>)Entries).Add(item);
+        }
+
+        public void Clear()
+        {
+            ((IList<ParamDefEntry>)Entries).Clear();
+        }
+
+        public bool Contains(ParamDefEntry item)
+        {
+            return ((IList<ParamDefEntry>)Entries).Contains(item);
+        }
+
+        public void CopyTo(ParamDefEntry[] array, int arrayIndex)
+        {
+            ((IList<ParamDefEntry>)Entries).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(ParamDefEntry item)
+        {
+            return ((IList<ParamDefEntry>)Entries).Remove(item);
+        }
+
+        public int Count => ((IList<ParamDefEntry>)Entries).Count;
+
+        public bool IsReadOnly => ((IList<ParamDefEntry>)Entries).IsReadOnly;
+
+        public IEnumerator<ParamDefEntry> GetEnumerator()
+        {
+            return ((IList<ParamDefEntry>)Entries).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IList<ParamDefEntry>)Entries).GetEnumerator();
         }
     }
 }

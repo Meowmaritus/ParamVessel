@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MeowDSIO.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +25,18 @@ namespace MeowDSIO
         private Stack<PaddedRegion> PaddedRegionStack = new Stack<PaddedRegion>();
 
         public bool BigEndian = false;
+
+        public void StepInMSB(int offset)
+        {
+            if (currentMsbStructOffset >= 0)
+            {
+                StepIn(currentMsbStructOffset + offset);
+            }
+            else
+            {
+                throw new DSReadException(this, $"Attempted to use .{nameof(StepInMSB)}() without running .{nameof(StartMsbStruct)}() first.");
+            }
+        }
 
         public void StepIn(long offset)
         {

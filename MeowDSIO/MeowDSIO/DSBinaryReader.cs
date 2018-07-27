@@ -1,11 +1,15 @@
-﻿using MeowDSIO.Exceptions.DSRead;
+﻿using MeowDSIO.DataFiles;
+using MeowDSIO.DataTypes.FLVER;
+using MeowDSIO.Exceptions.DSRead;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
+using MeowDSIO.Exceptions;
 
 namespace MeowDSIO
 {
@@ -28,7 +32,45 @@ namespace MeowDSIO
         {
             FileName = fileName;
         }
-        
+
+        private long currentMsbStructOffset = -1;
+
+        public int MsbOffset
+        {
+            get
+            {
+                if (currentMsbStructOffset >= 0)
+                {
+                    return (int)(Position - currentMsbStructOffset);
+                }
+                else
+                {
+                    throw new DSReadException(this, $"Attempted to read current MSB struct offset without running .{nameof(StartMsbStruct)}() first.");
+                }
+            }
+            set
+            {
+                if (currentMsbStructOffset >= 0)
+                {
+                    Position = (currentMsbStructOffset + value);
+                }
+                else
+                {
+                    throw new DSReadException(this, $"Attempted to write current MSB struct offset without running .{nameof(StartMsbStruct)}() first.");
+                }
+            }
+        }
+
+        public void StartMsbStruct()
+        {
+            currentMsbStructOffset = Position;
+        }
+
+        public void EndMsbStruct()
+        {
+            currentMsbStructOffset = -1;
+        }
+
         /// <summary>
         /// Reads an ASCII string.
         /// </summary>
@@ -126,6 +168,9 @@ namespace MeowDSIO
                 shiftJisData.Add(nextByte);
             }
 
+            if (shiftJisData.Count == 0)
+                return "";
+
             return ShiftJISEncoding.GetString(shiftJisData.ToArray());
         }
 
@@ -166,6 +211,33 @@ namespace MeowDSIO
             return new Vector3(x, y, z);
         }
 
+        
+
+        public Vector3? ReadFlverNullableVector3(byte[] compare)
+        {
+            byte[] valueBytes = ReadBytes(compare.Length);
+
+            bool isNull = true;
+            for (int i = 0; i < valueBytes.Length; i++)
+            {
+                if (valueBytes[i] != compare[i])
+                {
+                    isNull = false;
+                    break;
+                }
+            }
+
+            if (isNull)
+                return null;
+
+            Position -= compare.Length;
+
+            float x = ReadSingle();
+            float y = ReadSingle();
+            float z = ReadSingle();
+            return new Vector3(x, y, z);
+        }
+
         public Vector4 ReadVector4()
         {
             float w = ReadSingle();
@@ -173,6 +245,48 @@ namespace MeowDSIO
             float y = ReadSingle();
             float z = ReadSingle();
             return new Vector4(w, x, y, z);
+        }
+
+        public FlverVertexColor ReadFlverVertexColor()
+        {
+            return new FlverVertexColor()
+            {
+                R = ReadByte(),
+                G = ReadByte(),
+                B = ReadByte(),
+                A = ReadByte(),
+            };
+        }
+
+        public FlverUV ReadFlverUV()
+        {
+            ushort u = ReadUInt16();
+            ushort v = ReadUInt16();
+            return new FlverUV(u, v);
+        }
+
+        public float ReadFlver8BitFloat()
+        {
+            return (ReadByte() - 127) / 127f;
+        }
+
+        public FlverPackedVector4 ReadFlverPackedVector4()
+        {
+            return new FlverPackedVector4()
+            {
+                X = (sbyte)(ReadByte() - 127),
+                Y = (sbyte)(ReadByte() - 127),
+                Z = (sbyte)(ReadByte() - 127),
+                W = (sbyte)(ReadByte() - 127),
+            };
+        }
+
+        public double ReadFlverVersion()
+        {
+            short upper = ReadInt16();
+            short lower = ReadInt16();
+
+            return double.Parse($"{upper}.{lower}");
         }
 
         public string ReadMtdName(out byte delim)
@@ -246,8 +360,80 @@ namespace MeowDSIO
             }
         }
 
+        public TData ReadAsDataFile<TData>(string virtualUri = null, int dataSizeInBytes = -1)
+            where TData: DataFile, new()
+        {
+            byte[] data = ReadBytes((dataSizeInBytes < 0) ? (int)Length : dataSizeInBytes);
+            return DataFile.LoadFromBytes<TData>(data, virtualUri ?? FileName);
+        }
 
+        public byte[] ReadAllBytes()
+        {
+            return ReadBytes((int)BaseStream.Length);
+        }
+        
+        public void AssertByte(byte value)
+        {
+            byte b = ReadByte();
+            if (b != value)
+            {
+                throw new InvalidDataException(string.Format(
+                    "Read byte: 0x{0:X} | Expected byte: 0x{1:X}", b, value));
+            }
+        }
 
+        public void AssertBytes(params byte[] values)
+        {
+            foreach (byte value in values)
+            {
+                byte b = ReadByte();
+                if (b != value)
+                {
+                    throw new InvalidDataException(string.Format(
+                        "Read byte: 0x{0:X} | Expected byte: 0x{1:X}", b, value));
+                }
+            }
+        }
 
+        public void AssertInt32(int value)
+        {
+            int i = ReadInt32();
+            if (i != value)
+            {
+                throw new InvalidDataException(string.Format(
+                    "Read int: 0x{0:X} | Expected int: 0x{1:X}", i, value));
+            }
+        }
+
+        public void AssertStringAscii(string value, int length)
+        {
+            string s = ReadStringAscii(length);
+            if (s != value)
+            {
+                throw new InvalidDataException(string.Format(
+                    "Read string: {0} | Expected string: {1}", s, value));
+            }
+        }
+
+        public string ReadMsbString()
+        {
+            string result = null;
+
+            int msbStringOffset = ReadInt32();
+            if (msbStringOffset > 0)
+            {
+                StepInMSB(msbStringOffset);
+                {
+                    result = ReadStringShiftJIS();
+                }
+                StepOut();
+            }
+            else
+            {
+                throw new DSReadException(this, "Read an MSB string offset of 0. I thought all MSB strings pointed somewhere, even if empty...?");
+            }
+
+            return result;
+        }
     }
 }

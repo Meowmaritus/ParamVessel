@@ -197,10 +197,17 @@ namespace MeowDSIO.DataTypes.PARAMDEF
                         }
                         else
                         {
-                            throw new Exception("INT value found for a boolean Param entry.");
+                            if (value == 0 || value == 1)
+                            {
+                                value = (value == 1);
 
-                            if (value != 0)
-                                bitVal += (1 << bitField);
+                                if ((bool)value)
+                                    bitVal += (1 << bitField);
+                            }
+                            else
+                            {
+                                throw new Exception("Multi-bit INT value found for a boolean Param entry.");
+                            }
                         }
                     }
                     else

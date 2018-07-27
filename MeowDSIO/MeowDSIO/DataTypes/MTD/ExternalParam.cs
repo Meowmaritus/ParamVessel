@@ -16,6 +16,11 @@ namespace MeowDSIO.DataTypes.MTD
         public int UnknownB { get; set; }
         public int ShaderDataIndex { get; set; }
 
+        public override string ToString()
+        {
+            return $"[{ShaderDataIndex:D4}] {Name}";
+        }
+
         public static ExternalMtdParam Read(DSBinaryReader bin)
         {
             var p = new ExternalMtdParam();

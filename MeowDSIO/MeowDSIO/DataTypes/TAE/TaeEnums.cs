@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MeowDSIO.DataTypes.TAE
+{
+    public enum TimeActEventType
+    {
+        Type000 = 000,
+        Type001 = 001,
+        Type002 = 002,
+        Type005 = 005,
+        Type008 = 008,
+        Type016 = 016,
+        Type024 = 024,
+        Type032 = 032,
+        Type033 = 033,
+        Type064 = 064,
+        Type065 = 065,
+        Type066 = 066,
+        Type067 = 067,
+        Type096 = 096,
+        Type099 = 099,
+        Type100 = 100,
+        Type101 = 101,
+        Type104 = 104,
+        Type108 = 108,
+        Type109 = 109,
+        Type110 = 110,
+        Type112 = 112,
+        Type114 = 114,
+        Type115 = 115,
+        Type116 = 116,
+        Type118 = 118,
+        Type119 = 119,
+        Type120 = 120,
+        Type121 = 121,
+        Type128 = 128,
+        Type129 = 129,
+        Type130 = 130,
+        Type144 = 144,
+        Type145 = 145,
+        Type193 = 193,
+        Type224 = 224,
+        Type225 = 225,
+        Type226 = 226,
+        Type228 = 228,
+        Type229 = 229,
+        Type231 = 231,
+        Type232 = 232,
+        Type233 = 233,
+        Type236 = 236,
+        Type300 = 300,
+        Type301 = 301,
+        Type302 = 302,
+        Type303 = 303,
+        Type304 = 304,
+        Type306 = 306,
+        Type307 = 307,
+        Type308 = 308,
+        Type401 = 401,
+        Type500 = 500,
+    }
+}

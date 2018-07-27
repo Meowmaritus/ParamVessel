@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +42,10 @@ namespace MeowDSIO.DataTypes.MTD
         public const int UnknownD_Length = 0x4;
         public byte[] UnknownD { get; set; }
 
+        public override string ToString()
+        {
+            return $"{DataFiles.MTD.ParamNamesByType[ValueType]} {Name} = {Value.ToString()}";
+        }
 
 
         public static InternalMtdParam Read(DSBinaryReader bin)

@@ -47,15 +47,27 @@ namespace MeowDSIO.DataTypes.FMG
 
                 for (int i = 0; i < count; i++)
                 {
-                    if (buffer[i] > 0)
+                    string stringContents = null;
+
+                    if (buffer[i] == 0)
                     {
-                        bin.Position = buffer[i];
-                        entries.Add(new FMGEntryRef(FirstStringID + i, bin.ReadStringUnicode(length: null)));
+                        stringContents = DataFiles.FMG.NullString;
                     }
                     else
                     {
-                        entries.Add(new FMGEntryRef(FirstStringID + i, null));
+                        bin.Position = buffer[i];
+                        stringContents = bin.ReadStringUnicode(length: null);
+
+                        if (string.IsNullOrWhiteSpace(stringContents.Trim()))
+                            stringContents = DataFiles.FMG.EmptyString;
                     }
+
+                    if (stringContents == null)
+                    {
+                        throw new Exception(":trashcat:");
+                    }
+
+                    entries.Add(new FMGEntryRef(FirstStringID + i, stringContents));
                 }
             }
             bin.StepOut();

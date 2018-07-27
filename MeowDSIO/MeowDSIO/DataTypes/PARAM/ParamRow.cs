@@ -16,6 +16,34 @@ namespace MeowDSIO.DataTypes.PARAM
 
         public ObservableCollection<ParamCellValueRef> Cells { get; set; }
 
+        public object this[string fieldName]
+        {
+            get
+            {
+                var fieldsOfName = Cells.Where(x => x.Def.Name == fieldName);
+                if (fieldsOfName.Any())
+                {
+                    return fieldsOfName.First().Value;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                var fieldsOfName = Cells.Where(x => x.Def.Name == fieldName);
+                if (fieldsOfName.Any())
+                {
+                    fieldsOfName.First().Value = value;
+                }
+                else
+                {
+                    throw new Exception($"Param column {fieldName} does not exist in this param");
+                }
+            }
+        }
+
         public void LoadValuesFromRawData(DataFiles.PARAM Parent)
         {
             int offset = 0, bitVal = 0, bitField = 0;
@@ -58,19 +86,8 @@ namespace MeowDSIO.DataTypes.PARAM
 
             for (int i = 0; i < Parent.AppliedPARAMDEF.Entries.Count; i++)
             {
-                if (Parent.AppliedPARAMDEF.Entries[i].ValueBitCount == 1)
-                {
-                    Parent.AppliedPARAMDEF.Entries[i]
-                        .WriteValueToParamEntryRawData(this, Parent.AppliedPARAMDEF.Entries[i].DefaultValue != 0,
-                        ref offset, ref bitField, ref bitVal);
-                }
-                else
-                {
-                    Parent.AppliedPARAMDEF.Entries[i]
-                        .WriteValueToParamEntryRawData(this, Parent.AppliedPARAMDEF.Entries[i].DefaultValue,
-                        ref offset, ref bitField, ref bitVal);
-                }
-                
+                Parent.AppliedPARAMDEF.Entries[i]
+                    .WriteValueToParamEntryRawData(this, Parent.AppliedPARAMDEF.Entries[i].DefaultValue, ref offset, ref bitField, ref bitVal);
             }
         }
 

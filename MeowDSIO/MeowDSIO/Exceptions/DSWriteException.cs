@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeowDSIO.Exceptions
 {
-    public abstract class DSWriteException : DSIOException
+    public class DSWriteException : DSIOException
     {
         public DSWriteException(DSBinaryWriter bin, string message)
             : base(DSIOExceptionType.Write, message, bin.FileName, bin.Position)

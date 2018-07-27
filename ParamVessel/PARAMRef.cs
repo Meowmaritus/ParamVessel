@@ -24,7 +24,7 @@ namespace MeowsBetterParamEditor
                     if (ParamDataContext.SpecialInternalParamNameOverrides.ContainsKey(Key))
                         FancyDisplayNameCache.Add(this, ParamDataContext.SpecialInternalParamNameOverrides[Key]);
                     else
-                        FancyDisplayNameCache.Add(this, Value.Name);
+                        FancyDisplayNameCache.Add(this, Value.ID);
 
                     // If it somehow throw the KeyNotFoundException here, then there's a problem lol
                     return FancyDisplayNameCache[this];
@@ -49,7 +49,7 @@ namespace MeowsBetterParamEditor
 
         public override string ToString()
         {
-            return $"{BNDName} - {Key} - {Value.Name}";
+            return $"{BNDName} - {Key} - {Value.ID}";
         }
     }
 }

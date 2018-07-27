@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -147,7 +147,7 @@ namespace MeowDSIO.DataFiles
             UnknownI06 = bin.ReadInt32();
 
             //TODO: Add real progress.
-            prog.Report((1, 1)); //PLACEHOLDER
+            prog?.Report((1, 1)); //PLACEHOLDER
         }
 
         protected override void Write(DSBinaryWriter bin, IProgress<(int, int)> prog)
@@ -220,7 +220,7 @@ namespace MeowDSIO.DataFiles
             bin.Write(fileSize - 0x44);
 
             //TODO: Add real progress.
-            prog.Report((1, 1)); //PLACEHOLDER
+            prog?.Report((1, 1)); //PLACEHOLDER
         }
 
         public static IList<Type> ParamTypes = new List<Type>

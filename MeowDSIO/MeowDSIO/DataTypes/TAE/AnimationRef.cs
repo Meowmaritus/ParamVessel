@@ -20,11 +20,12 @@ namespace MeowDSIO.DataTypes.TAE
             ResetToDefaultFileName();
         }
 
-        public void AddNewEvent()
-        {
-            var newEvent = new AnimationEvent(Anim.Events.Count + 1, AnimationEventType.ApplySpecialProperty, ID);
-            Anim.Events.Add(newEvent);
-        }
+        //public AnimationEvent AddNewEvent()
+        //{
+        //    var newEvent = new AnimationEvent(Anim.Events.Count + 1, AnimationEventType.ApplySpecialProperty, ID);
+        //    Anim.Events.Add(newEvent);
+        //    return newEvent;
+        //}
 
         public void ResetToDefaultFileName()
         {
@@ -42,6 +43,11 @@ namespace MeowDSIO.DataTypes.TAE
             }
 
             Anim.FileName = $"a{leftNum:D02}_{rightNum:D04}.HKXwin";
+        }
+
+        public override string ToString()
+        {
+            return $"[{ID}] {Anim.FileName}";
         }
     }
 }
