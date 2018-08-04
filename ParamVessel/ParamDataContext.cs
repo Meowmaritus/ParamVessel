@@ -170,12 +170,14 @@ namespace MeowsBetterParamEditor
 
 #if REMASTER
             var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, "*.parambnd.dcx")
+                .Where(p => new FileInfo(p).Name.ToLower() == "gameparam.parambnd.dcx")
                 .Select(p => DataFile.LoadFromDcxFile<BND>(p));
 
             var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, "*.parambnd.dcx")
                 .Select(p => DataFile.LoadFromDcxFile<BND>(p));
 #else
             var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, "*.parambnd")
+                .Where(p => new FileInfo(p).Name.ToLower() == "gameparam.parambnd")
                 .Select(p => DataFile.LoadFromFile<BND>(p));
 
             var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, "*.parambnd")
@@ -234,7 +236,7 @@ namespace MeowsBetterParamEditor
             }
 
             UPCOMING_Params = new ObservableCollection<PARAMRef>(UPCOMING_Params
-                .OrderBy(x => x.Value.ID)
+                .OrderBy(x => x.FancyDisplayName)
                 .OrderBy(x => x.IsDrawParam));
 
             Application.Current.Dispatcher.Invoke(() =>

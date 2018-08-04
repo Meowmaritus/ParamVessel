@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParamVessel", "ParamVessel\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeowDSIO", "MeowDSIO\MeowDSIO\MeowDSIO.csproj", "{4AD69470-8146-4D20-94F0-DA9844EEE5A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTDA_Porter", "PTDA_Porter\PTDA_Porter.csproj", "{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,14 +31,6 @@ Global
 		{4AD69470-8146-4D20-94F0-DA9844EEE5A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4AD69470-8146-4D20-94F0-DA9844EEE5A2}.ReleaseR|Any CPU.ActiveCfg = Release|Any CPU
 		{4AD69470-8146-4D20-94F0-DA9844EEE5A2}.ReleaseR|Any CPU.Build.0 = Release|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.DebugR|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.DebugR|Any CPU.Build.0 = Debug|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.ReleaseR|Any CPU.ActiveCfg = Release|Any CPU
-		{1C3B37A4-5BD1-40F6-BE48-D9E118B46BE9}.ReleaseR|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

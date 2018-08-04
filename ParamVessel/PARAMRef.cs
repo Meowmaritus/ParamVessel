@@ -9,26 +9,27 @@ namespace MeowsBetterParamEditor
 {
     public class PARAMRef
     {
-        private static Dictionary<PARAMRef, string> FancyDisplayNameCache = new Dictionary<PARAMRef, string>();
+        //private static Dictionary<PARAMRef, string> FancyDisplayNameCache = new Dictionary<PARAMRef, string>();
 
         public string FancyDisplayName
         {
             get
             {
-                try
-                {
-                    return FancyDisplayNameCache[this];
-                }
-                catch (KeyNotFoundException)
-                {
-                    if (ParamDataContext.SpecialInternalParamNameOverrides.ContainsKey(Key))
-                        FancyDisplayNameCache.Add(this, ParamDataContext.SpecialInternalParamNameOverrides[Key]);
-                    else
-                        FancyDisplayNameCache.Add(this, Value.ID);
+                return Key;
+                //try
+                //{
+                //    return FancyDisplayNameCache[this];
+                //}
+                //catch (KeyNotFoundException)
+                //{
+                //    if (ParamDataContext.SpecialInternalParamNameOverrides.ContainsKey(Key))
+                //        FancyDisplayNameCache.Add(this, ParamDataContext.SpecialInternalParamNameOverrides[Key]);
+                //    else
+                //        FancyDisplayNameCache.Add(this, Value.ID);
 
-                    // If it somehow throw the KeyNotFoundException here, then there's a problem lol
-                    return FancyDisplayNameCache[this];
-                }
+                //    // If it somehow throw the KeyNotFoundException here, then there's a problem lol
+                //    return FancyDisplayNameCache[this];
+                //}
             }
         }
 
