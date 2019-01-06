@@ -374,6 +374,7 @@
                     <ContextMenu x:Name="ContextMenuParamRow" Opened="ContextMenuParamRow_Opened">
                         <MenuItem x:Name="ContextMenuParamRow_Duplicate_ExactCopy" Header="Duplicate Entry" Click="ContextMenuParamRow_Duplicate_ExactCopy_Click" InputGestureText="Ctrl+D"/>
                         <MenuItem x:Name="ContextMenuParamRow_CopyAllValues" Header="Copy Bytes" Click="ContextMenuParamRow_CopyAllValues_Click" InputGestureText="Ctrl+C"/>
+                        
                         <MenuItem x:Name="ContextMenuParamRow_PasteAllValues" Header="Paste Bytes" Click="ContextMenuParamRow_PasteAllValues_Click" IsEnabled="{Binding IsParamRowClipboardValid}" InputGestureText="Ctrl+V"/>
                         <Separator/>
                         <MenuItem x:Name="ContextMenuParamRow_Delete" Click="ContextMenuParamRow_Delete_Click" InputGestureText="Shift+Delete">
@@ -385,6 +386,8 @@
                                 </DataTemplate>
                             </MenuItem.HeaderTemplate>
                         </MenuItem>
+                        <Separator/>
+                        <MenuItem x:Name="ContextMenuParamRow_ExportForDSParamLauncher" Header="Export for DSParamLauncher..." Click="ContextMenuParamRow_ExportForDSParamLauncher_Click"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
 
@@ -530,10 +533,14 @@
                 <DataGrid.RowStyle>
                     <Style TargetType="{x:Type DataGridRow}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Def.GuiValueType}" Value="{x:Static paramdef:ParamTypeDef.dummy8}">
+                            <DataTrigger 
+                                Binding="{Binding Def.GuiValueType}" 
+                                Value="{x:Static paramdef:ParamTypeDef.dummy8}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Def.InternalValueType}" Value="{x:Static paramdef:ParamTypeDef.dummy8}">
+                            <DataTrigger 
+                                Binding="{Binding Def.InternalValueType}" 
+                                Value="{x:Static paramdef:ParamTypeDef.dummy8}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>

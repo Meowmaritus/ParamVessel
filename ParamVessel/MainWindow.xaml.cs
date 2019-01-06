@@ -701,6 +701,54 @@ namespace MeowsBetterParamEditor
             }
         }
 
+        private static void ExportParamRowToJson(ParamRow row, string jsonFile)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(row.Name);
+            sb.AppendLine("{");
+
+            bool first = true;
+            foreach (var cell in row.Cells)
+            {
+                if (cell.Def.InternalValueType == ParamTypeDef.dummy8 || cell.Def.GuiValueType == ParamTypeDef.dummy8)
+                    continue;
+
+                if (first)
+                    first = false;
+                else
+                    sb.AppendLine(",");
+
+                sb.Append($"  \"{cell.Def.Name}\": {cell.Value.ToString().ToLower()}");
+            }
+            sb.AppendLine();
+            sb.AppendLine("}");
+
+            File.WriteAllText(jsonFile, sb.ToString());
+        }
+
+        private void ParamRowExportForDSParamLauncher()
+        {
+            var selectedParamRow = ParamEntryList.SelectedItem as ParamRow;
+            var selectedParam = MainTabs.SelectedItem as PARAMRef;
+
+            if (selectedParam == null || selectedParamRow == null)
+                return;
+
+            string fileName = $"{selectedParamRow.ID} {selectedParamRow.Name}.json";
+
+            var saveDialog = new SaveFileDialog()
+            {
+                FileName = $"{selectedParamRow.ID} {selectedParamRow.Name}.json",
+                Filter = "JSON Param Entry (*.JSON)|*.JSON",
+                InitialDirectory = PARAMDATA.Config.InterrootPath,
+            };
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                ExportParamRowToJson(selectedParamRow, saveDialog.FileName);
+            }
+        }
+
         private void ContextMenuParamRow_CopyAllValues_Click(object sender, RoutedEventArgs e)
         {
             ParamRowCopyBytes();
@@ -785,6 +833,11 @@ namespace MeowsBetterParamEditor
         private void ContextMenuParamRow_Delete_Click(object sender, RoutedEventArgs e)
         {
             ParamRowDelete();
+        }
+
+        private void ContextMenuParamRow_ExportForDSParamLauncher_Click(object sender, RoutedEventArgs e)
+        {
+            ParamRowExportForDSParamLauncher();
         }
     }
 }
