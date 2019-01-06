@@ -386,6 +386,11 @@ namespace MeowsBetterParamEditor
                         {
                             matchingParam.EntrySize = 48;
                         }
+                        else if (matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONECORRECTBANK") ||
+                            matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\DEFAULT_TONECORRECTBANK"))
+                        {
+                            matchingParam.EntrySize = 36;
+                        }
                         param.ReplaceData(matchingParam);
                     }
                     else
