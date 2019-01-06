@@ -36,12 +36,6 @@ namespace MeowsBetterParamEditor
 
             //DEBUG
             //PARAMDATA.DEBUG_RestoreBackupsLoadResave();
-
-#if REMASTER
-            Title += " (DS1R-Only Version)";
-#else
-            Title += " (PTDE-Only Version)";
-#endif
         }
 
         private void SetLoadingMode(bool isLoading)
@@ -66,20 +60,6 @@ namespace MeowsBetterParamEditor
 
         private async Task BrowseForInterrootDialog(Action<bool> setIsLoading)
         {
-#if REMASTER
-            var browseDialog = new OpenFileDialog()
-            {
-                AddExtension = false,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Multiselect = false,
-                FileName = "DarkSoulsRemastered.exe",
-                Filter = "Dark Souls Remastered EXEs (Usually DarkSoulsRemastered.exe)|*.exe",
-                ShowReadOnly = false,
-                Title = "Choose your DarkSoulsRemastered.exe file...",
-                ValidateNames = true
-            };
-#else
             var browseDialog = new OpenFileDialog()
             {
                 AddExtension = false,
@@ -87,12 +67,11 @@ namespace MeowsBetterParamEditor
                 CheckPathExists = true,
                 Multiselect = false,
                 FileName = "DARKSOULS.exe",
-                Filter = "Dark Souls: PTDE EXEs (Usually DARKSOULS.exe)|*.exe",
+                Filter = "Executable Files (*.EXE)|*.EXE",
                 ShowReadOnly = false,
-                Title = "Choose your DARKSOULS.exe file...",
+                Title = "Choose your DARKSOULS.exe or DarkSoulsRemastered.exe file...",
                 ValidateNames = true
             };
-#endif
 
 
 
@@ -109,18 +88,10 @@ namespace MeowsBetterParamEditor
                 {
                     var sb = new StringBuilder();
 
-#if REMASTER
                     sb.AppendLine(@"Directory of EXE chosen did not include the following directories/files which are required:");
                     sb.AppendLine(@" - '.\param\DrawParam\'");
                     sb.AppendLine(@" - '.\param\GameParam\'");
-                    sb.AppendLine(@" - '.\param\GameParam\GameParam.parambnd.dcx'");
-                    sb.AppendLine(@" - '.\paramdef\paramdef.paramdefbnd.dcx'");
-#else
-                    sb.AppendLine(@"Directory of EXE chosen did not include the following directories/files which are required:");
-                    sb.AppendLine(@" - '.\param\DrawParam\'");
-                    sb.AppendLine(@" - '.\param\GameParam\'");
-                    sb.AppendLine(@" - '.\param\GameParam\GameParam.parambnd'");
-                    sb.AppendLine(@" - '.\paramdef\paramdef.paramdefbnd'");
+                    sb.AppendLine(@" - '.\paramdef\'");
 
                     if (CheckIfUdsfmIsProbablyNotInstalled(interrootDir))
                     {
@@ -140,12 +111,7 @@ namespace MeowsBetterParamEditor
                         sb.AppendLine(@" - '.\dvdbnd2.bhd5' exists.");
                         sb.AppendLine(@" - '.\dvdbnd3.bhd5' exists.");
                     }
-#endif
-
-
-
-
-
+                    
                     MessageBox.Show(
                         sb.ToString(), 
                         "Invalid Directory", 
@@ -171,22 +137,10 @@ namespace MeowsBetterParamEditor
 
         private bool CheckInterrotDirValid(string dir)
         {
-#if REMASTER
             return
                 Directory.Exists(IOHelper.Frankenpath(dir, @"param\DrawParam")) &&
                 Directory.Exists(IOHelper.Frankenpath(dir, @"param\GameParam")) &&
-                Directory.Exists(IOHelper.Frankenpath(dir, @"paramdef")) &&
-                File.Exists(IOHelper.Frankenpath(dir, @"param\GameParam\GameParam.parambnd.dcx")) &&
-                File.Exists(IOHelper.Frankenpath(dir, @"paramdef\paramdef.paramdefbnd.dcx"));
-#else
-            return
-                Directory.Exists(IOHelper.Frankenpath(dir, @"param\DrawParam")) &&
-                Directory.Exists(IOHelper.Frankenpath(dir, @"param\GameParam")) &&
-                Directory.Exists(IOHelper.Frankenpath(dir, @"paramdef")) &&
-                File.Exists(IOHelper.Frankenpath(dir, @"param\GameParam\GameParam.parambnd")) &&
-                File.Exists(IOHelper.Frankenpath(dir, @"paramdef\paramdef.paramdefbnd"));
-#endif
-
+                Directory.Exists(IOHelper.Frankenpath(dir, @"paramdef"));
         }
 
         //private void RANDOM_DEBUG_TESTING()
@@ -361,10 +315,9 @@ namespace MeowsBetterParamEditor
             }
             else
             {
-#if REMASTER
-                if (MessageBox.Show("Note: ORIGINAL DARK SOULS: PREPARE TO DIE EDITION IS NOT COMPATIBLE WITH THIS VERSION OF PARAM VESSEL." +
-                    "\n\n" +
-                    @"Please navigate to your 'DARK SOULS REMASTERED\DarkSoulsRemastered.exe' file." +
+                if (MessageBox.Show("If you are using non-remastered Dark Souls: Prepare to Die Edition, your installation " +
+                    "MUST be unpacked by UnpackDarkSoulsForModding by HotPocketRemix.\n\n" +
+                    @"Please navigate to your 'DARKSOULS.exe' or 'DarkSoulsRemastered.exe' file." +
                     "\n\nOnce the inital setup is performed, the path will be saved." +
                     "\nYou may press cancel to continue without selecting the path but the GUI will " +
                     "be blank until you go to 'File -> Select Dark Souls Directory...'",
@@ -372,19 +325,6 @@ namespace MeowsBetterParamEditor
                 {
                     await BrowseForInterrootDialog(SetLoadingMode);
                 }
-#else
-                if (MessageBox.Show("Note: DARK SOULS REMASTERED IS NOT COMPATIBLE WITH THIS VERSION OF PARAM VESSEL." +
-                    "\nYour Dark Souls: Prepare to Die Edition installation MUST be unpacked by UnpackDarkSoulsForModding by HotPocketRemix.\n\n" +
-                    @"Please navigate to your 'Dark Souls Prepare to Die Edition\DATA\DARKSOULS.exe' file." +
-                    "\n\nOnce the inital setup is performed, the path will be saved." +
-                    "\nYou may press cancel to continue without selecting the path but the GUI will " +
-                    "be blank until you go to 'File -> Select Dark Souls Directory...'",
-                    "Initial Setup", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
-                {
-                    await BrowseForInterrootDialog(SetLoadingMode);
-                }
-#endif
-
 
             }
 
@@ -512,11 +452,13 @@ namespace MeowsBetterParamEditor
 
         private void MenuPatchParamDefs_Click(object sender, RoutedEventArgs e)
         {
-#if REMASTER
-            MessageBox.Show("This action is only available on the PTDE version.", "Not Supported", MessageBoxButton.OK, MessageBoxImage.Stop);
-            return;
-#else
-            if (MessageBox.Show("This modification will replace the Japanese display names of the variables" +
+            if (PARAMDATA.Config.IsRemaster)
+            {
+                MessageBox.Show("This option only works on Dark Souls: Prepare to Die Edition.", "Not Supported", MessageBoxButton.OK, MessageBoxImage.Hand);
+                return;
+            }
+
+            if (MessageBox.Show("This modification, which works only on PTDE, not the remaster, will replace the Japanese display names of the variables" +
                 " in the ParamDefs with their internal variable names, which are in English. " +
                 "\nThese display names are used in the Dark Souls debug menu's '[PARAM MAN]' submenu. " +
                 "\nNo more blindly adjusting Japanese-named variables." +
@@ -553,7 +495,6 @@ namespace MeowsBetterParamEditor
                     }
                 }
             }
-#endif
         }
 
         private void MenuRandomize_Click(object sender, RoutedEventArgs e)
@@ -797,36 +738,36 @@ namespace MeowsBetterParamEditor
 
         private void ParamEntryList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                {
+            //if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            //{
+            //    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            //    {
 
-                }
-                else
-                {
-                    if (e.Key == Key.D)
-                    {
-                        ParamRowDuplicate();
-                    }
-                    else if (e.Key == Key.C)
-                    {
-                        ParamRowCopyBytes();
-                    }
-                    else if (e.Key == Key.V)
-                    {
-                        ParamRowPasteBytes();
-                    }
-                }
+            //    }
+            //    else
+            //    {
+            //        if (e.Key == Key.D)
+            //        {
+            //            ParamRowDuplicate();
+            //        }
+            //        else if (e.Key == Key.C)
+            //        {
+            //            ParamRowCopyBytes();
+            //        }
+            //        else if (e.Key == Key.V)
+            //        {
+            //            ParamRowPasteBytes();
+            //        }
+            //    }
                 
-            }
-            else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-            {
-                if (e.Key == Key.Delete)
-                {
-                    ParamRowDelete();
-                }
-            }
+            //}
+            //else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            //{
+            //    if (e.Key == Key.Delete)
+            //    {
+            //        ParamRowDelete();
+            //    }
+            //}
 
         }
 

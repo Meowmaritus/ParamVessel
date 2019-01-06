@@ -372,12 +372,12 @@
 
                 <DataGrid.ContextMenu>
                     <ContextMenu x:Name="ContextMenuParamRow" Opened="ContextMenuParamRow_Opened">
-                        <MenuItem x:Name="ContextMenuParamRow_Duplicate_ExactCopy" Header="Duplicate Entry" Click="ContextMenuParamRow_Duplicate_ExactCopy_Click" InputGestureText="Ctrl+D"/>
-                        <MenuItem x:Name="ContextMenuParamRow_CopyAllValues" Header="Copy Bytes" Click="ContextMenuParamRow_CopyAllValues_Click" InputGestureText="Ctrl+C"/>
+                        <MenuItem x:Name="ContextMenuParamRow_Duplicate_ExactCopy" Header="Duplicate Entry" Click="ContextMenuParamRow_Duplicate_ExactCopy_Click"/>
+                        <MenuItem x:Name="ContextMenuParamRow_CopyAllValues" Header="Copy Bytes" Click="ContextMenuParamRow_CopyAllValues_Click"/>
                         
                         <MenuItem x:Name="ContextMenuParamRow_PasteAllValues" Header="Paste Bytes" Click="ContextMenuParamRow_PasteAllValues_Click" IsEnabled="{Binding IsParamRowClipboardValid}" InputGestureText="Ctrl+V"/>
                         <Separator/>
-                        <MenuItem x:Name="ContextMenuParamRow_Delete" Click="ContextMenuParamRow_Delete_Click" InputGestureText="Shift+Delete">
+                        <MenuItem x:Name="ContextMenuParamRow_Delete" Click="ContextMenuParamRow_Delete_Click">
                             <MenuItem.HeaderTemplate>
                                 <DataTemplate>
                                     <TextBlock>
@@ -387,7 +387,7 @@
                             </MenuItem.HeaderTemplate>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem x:Name="ContextMenuParamRow_ExportForDSParamLauncher" Header="Export for DSParamLauncher..." Click="ContextMenuParamRow_ExportForDSParamLauncher_Click"/>
+                        <MenuItem x:Name="ContextMenuParamRow_ExportForDSParamLauncher" Header="Export as .JSON for DSParamLauncher..." Click="ContextMenuParamRow_ExportForDSParamLauncher_Click"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
 

@@ -25,11 +25,16 @@ namespace MeowsBetterParamEditor
             set
             {
                 _interrootPath = value;
+
                 NotifyPropertyChanged(nameof(InterrootPath));
                 NotifyPropertyChanged(nameof(GameParamFolder));
                 NotifyPropertyChanged(nameof(DrawParamFolder));
                 NotifyPropertyChanged(nameof(ParamDefBndPath));
                 NotifyPropertyChanged(nameof(ParamFolder));
+
+                IsRemaster = System.IO.Directory.GetFiles(GameParamFolder).Any(x => x.ToUpper().EndsWith(".DCX"));
+
+                NotifyPropertyChanged(nameof(IsRemaster));
             }
         }
 
@@ -54,6 +59,8 @@ namespace MeowsBetterParamEditor
             }
         }
 
+        public bool IsRemaster { get; set; } = false;
+
         [JsonIgnore]
         public string GameParamFolder
             => IOHelper.Frankenpath(InterrootPath, "param\\GameParam\\");
@@ -66,17 +73,9 @@ namespace MeowsBetterParamEditor
         public string ParamFolder
             => IOHelper.Frankenpath(InterrootPath, "param\\");
 
-#if REMASTER
         [JsonIgnore]
         public string ParamDefBndPath
-            => IOHelper.Frankenpath(InterrootPath, "paramdef\\paramdef.paramdefbnd.dcx");
-#else
-        [JsonIgnore]
-        public string ParamDefBndPath
-            => IOHelper.Frankenpath(InterrootPath, "paramdef\\paramdef.paramdefbnd");
-#endif
-
-
+            => IOHelper.Frankenpath(InterrootPath, $"paramdef\\paramdef.paramdefbnd{(IsRemaster ? ".dcx" : "")}");
 
         public event PropertyChangedEventHandler PropertyChanged;
 

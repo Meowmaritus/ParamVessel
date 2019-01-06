@@ -146,11 +146,7 @@ namespace MeowsBetterParamEditor
 
         private string CheckInternalParamDefDirectory()
         {
-#if REMASTER
-            var gameParamDefBnd = DataFile.LoadFromDcxFile<BND>(Config.ParamDefBndPath);
-#else
             var gameParamDefBnd = DataFile.LoadFromFile<BND>(Config.ParamDefBndPath);
-#endif
             return new FileInfo(gameParamDefBnd.Entries.First().Name).DirectoryName;
         }
 
@@ -167,38 +163,18 @@ namespace MeowsBetterParamEditor
             var UPCOMING_Params = new ObservableCollection<PARAMRef>();
 
             ParamDefs.Clear();
-
-#if REMASTER
-            var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, "*.parambnd.dcx")
-                .Where(p => new FileInfo(p).Name.ToLower() == "gameparam.parambnd.dcx")
-                .Select(p => DataFile.LoadFromDcxFile<BND>(p));
-
-            var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, "*.parambnd.dcx")
-                .Select(p => DataFile.LoadFromDcxFile<BND>(p));
-#else
-            var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, "*.parambnd")
-                .Where(p => new FileInfo(p).Name.ToLower() == "gameparam.parambnd")
+            var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, $"*.parambnd{(Config.IsRemaster ? ".dcx" : "")}")
+                .Where(p => new FileInfo(p).Name.ToLower() == $"gameparam.parambnd{(Config.IsRemaster ? ".dcx" : "")}")
                 .Select(p => DataFile.LoadFromFile<BND>(p));
 
-            var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, "*.parambnd")
+            var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, $"*.parambnd{(Config.IsRemaster ? ".dcx" : "")}")
                 .Select(p => DataFile.LoadFromFile<BND>(p));
-#endif
-
-
 
             PARAMBNDs = gameparamBnds.Concat(drawparamBnds).ToList();
 
             foreach (var paramDef in PARAMDEFBND)
             {
                 var newParamDefName = IOHelper.RemoveExtension(new FileInfo(paramDef.Name).Name, EXT_PARAMDEF);
-
-#if REMASTER
-                if (newParamDefName.Contains("ToneCorrectBank") || newParamDefName.Contains("ToneMapBank") || newParamDefName.Contains("LevelSync"))
-                {
-                    continue;
-                }
-#endif
-
                 ParamDefs.Add(new PARAMDEFRef(newParamDefName, paramDef.ReadDataAs<PARAMDEF>()));
             }
 
@@ -206,28 +182,12 @@ namespace MeowsBetterParamEditor
             {
                 foreach (var param in PARAMBNDs[i])
                 {
-                   
-
                     var newParam = param.ReadDataAs<PARAM>();
-
-#if REMASTER
-                    if (newParam.ID == "LEVELSYNC_PARAM_ST" || newParam.ID == "TONE_CORRECT_BANK" || newParam.ID == "TONE_MAP_BANK")
-                    {
-                        continue;
-                    }
-#endif
-
                     var newParamName = IOHelper.RemoveExtension(new FileInfo(param.Name).Name, EXT_PARAM);
-
                     newParam.ApplyPARAMDEFTemplate(ParamDefs.Where(x => x.Value.ID == newParam.ID).First().Value);
-
                     string newParamBndName = MiscUtil.GetFileNameWithoutDirectoryOrExtension(new FileInfo(PARAMBNDs[i].FilePath).Name);
 
-#if REMASTER
-                    //Extra pass due to the .dcx
                     newParamBndName = MiscUtil.GetFileNameWithoutDirectoryOrExtension(newParamBndName);
-#endif
-
 
                     UPCOMING_Params.Add(new PARAMRef(newParamName, newParam, 
                         PARAMBNDs[i].FilePath.ToUpper().Contains("DRAW"),
@@ -393,12 +353,7 @@ namespace MeowsBetterParamEditor
                 foreach (var bnd in PARAMBNDs)
                 {
                     bnd.RestoreBackup();
-
-#if REMASTER
-                    DataFile.ReloadDcx(bnd);
-#else
                     DataFile.Reload(bnd);
-#endif
                 }
 
                 LoadAllPARAMs();
@@ -424,16 +379,14 @@ namespace MeowsBetterParamEditor
                     string paramName = IOHelper.RemoveExtension(new FileInfo(param.Name).Name, EXT_PARAM);
                     var matchingParams = Params.Where(x => x.Key == paramName);
 
-#if REMASTER
-                    if (paramName.Contains("ToneCorrectBank") || paramName.Contains("ToneMapBank") || paramName.Contains("LevelSync"))
-                    {
-                        continue;
-                    }
-#endif
-
                     if (matchingParams.Any())
                     {
-                        param.ReplaceData(matchingParams.First().Value);
+                        var matchingParam = matchingParams.First().Value;
+                        if (matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONEMAPBANK"))
+                        {
+                            matchingParam.EntrySize = 48;
+                        }
+                        param.ReplaceData(matchingParam);
                     }
                     else
                     {
@@ -441,17 +394,9 @@ namespace MeowsBetterParamEditor
                             $"in \"{new FileInfo(paramBnd.FilePath).Name}\".", 
                             "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
-
-
                 }
 
-#if REMASTER
-                DataFile.ResaveDcx(paramBnd);
-#else
                 DataFile.Resave(paramBnd);
-#endif
-
-
             }
         }
 
