@@ -195,9 +195,25 @@ namespace MeowsBetterParamEditor
                 }
             }
 
+            //UPCOMING_Params = new ObservableCollection<PARAMRef>(UPCOMING_Params
+            //    .OrderBy(x => x.FancyDisplayName)
+            //    .OrderBy(x => x.IsDrawParam));
+
             UPCOMING_Params = new ObservableCollection<PARAMRef>(UPCOMING_Params
-                .OrderBy(x => x.FancyDisplayName)
-                .OrderBy(x => x.IsDrawParam));
+                .OrderBy(x =>
+                {
+                    if (x.IsDrawParam)
+                    {
+                        if (x.FancyDisplayName.StartsWith("s"))
+                            return "Zm" + x.FancyDisplayName.Substring(1);
+                        else
+                            return "Z" + x.FancyDisplayName;
+                    }
+                    else
+                    {
+                        return x.FancyDisplayName;
+                    }
+                }));
 
             Application.Current.Dispatcher.Invoke(() =>
             {

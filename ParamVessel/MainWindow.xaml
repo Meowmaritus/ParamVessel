@@ -19,6 +19,7 @@
     Icon="Resources/Soul_Vessel_Sqr.ico"
     MinWidth="1150"
     MinHeight="256"
+    TitlebarHeight="24"
     
         >
 
@@ -278,7 +279,7 @@
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto"
             Grid.Column="0" 
-            Grid.Row="1"
+            Grid.Row="1" 
             >
                 <TabControl
                 x:Name="MainTabs"
@@ -289,7 +290,7 @@
                 Margin="0,0,4,0"
                 HorizontalContentAlignment="Left"
                 VerticalContentAlignment="Center"
-                FontSize="12"
+                FontSize="10"
                 ItemContainerStyle="{StaticResource ParamTabItemStyle}" 
                 SelectionChanged="MainTabs_SelectionChanged" TargetUpdated="MainTabs_TargetUpdated"
                 
@@ -305,6 +306,7 @@
                                     Text="{Binding FancyDisplayName}" 
                                     HorizontalAlignment="Left"
                                     FontSize="12"
+                                    TextOptions.TextHintingMode="Fixed"
                                     />
                                 <TextBlock 
                                 Text="{Binding BNDName}"
@@ -313,7 +315,6 @@
                                 Foreground="White"
                                     FontSize="9"
                                     VerticalAlignment="Center"
-                                    FontStyle="Italic"
                                 >
 
                                     <TextBlock.Style>
@@ -366,7 +367,6 @@
             TargetUpdated="ParamEntryList_TargetUpdated"
             EnableRowVirtualization="True"
             EnableColumnVirtualization="True"
-                PreviewKeyDown="ParamEntryList_KeyDown"
                 ClipboardCopyMode="None"
             >
 
@@ -862,12 +862,13 @@
 
         <TextBlock
             Name="LoadingTextBox"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            TextAlignment="Center"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            TextAlignment="Right"
             Foreground="White"
             Visibility="Collapsed"
-            IsHitTestVisible="False"
+            IsHitTestVisible="False" 
+            Margin="0,0,64,32"
             >
             <TextBlock.BitmapEffect>
                 <DropShadowBitmapEffect 
@@ -891,12 +892,13 @@
 
         <TextBlock
             Name="SavingTextBox"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            TextAlignment="Center"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            TextAlignment="Right"
             Foreground="White"
             Visibility="Collapsed"
             IsHitTestVisible="False"
+            Margin="0,0,64,32"
             >
             <TextBlock.BitmapEffect>
                 <DropShadowBitmapEffect 

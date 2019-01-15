@@ -736,41 +736,6 @@ namespace MeowsBetterParamEditor
             }
         }
 
-        private void ParamEntryList_KeyDown(object sender, KeyEventArgs e)
-        {
-            //if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            //{
-            //    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-            //    {
-
-            //    }
-            //    else
-            //    {
-            //        if (e.Key == Key.D)
-            //        {
-            //            ParamRowDuplicate();
-            //        }
-            //        else if (e.Key == Key.C)
-            //        {
-            //            ParamRowCopyBytes();
-            //        }
-            //        else if (e.Key == Key.V)
-            //        {
-            //            ParamRowPasteBytes();
-            //        }
-            //    }
-                
-            //}
-            //else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-            //{
-            //    if (e.Key == Key.Delete)
-            //    {
-            //        ParamRowDelete();
-            //    }
-            //}
-
-        }
-
         private void ContextMenuParamRow_Delete_Click(object sender, RoutedEventArgs e)
         {
             ParamRowDelete();
