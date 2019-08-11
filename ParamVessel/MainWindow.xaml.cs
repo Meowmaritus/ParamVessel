@@ -38,66 +38,66 @@ namespace MeowsBetterParamEditor
             //PARAMDATA.DEBUG_RestoreBackupsLoadResave();
         }
 
-        public void LiveRefreshParam(PARAMRef p)
-        {
-            //MessageBox.Show(p.Key);
+        //public void LiveRefreshParam(PARAMRef p)
+        //{
+        //    //MessageBox.Show(p.Key);
 
-            if (p.Value.FilePath == null && p.Value.VirtualUri == null)
-            {
-                p.Value.FilePath = $"param/Reload/{p.Key}.param";
-            }
-            string paramReloadFolder = IOHelper.Frankenpath(PARAMDATA.Config.InterrootPath, $"param/Reload");
+        //    if (p.Value.FilePath == null && p.Value.VirtualUri == null)
+        //    {
+        //        p.Value.FilePath = $"param/Reload/{p.Key}.param";
+        //    }
+        //    string paramReloadFolder = IOHelper.Frankenpath(PARAMDATA.Config.InterrootPath, $"param/Reload");
 
-            if (!Directory.Exists(paramReloadFolder))
-                Directory.CreateDirectory(paramReloadFolder);
+        //    if (!Directory.Exists(paramReloadFolder))
+        //        Directory.CreateDirectory(paramReloadFolder);
 
-            DataFile.SaveToFile(p.Value, IOHelper.Frankenpath(paramReloadFolder, $"{p.Key}.param"));
+        //    DataFile.SaveToFile(p.Value, IOHelper.Frankenpath(paramReloadFolder, $"{p.Key}.param"));
 
-            if (PARAMDATA.Config.Kind == GameKind.DS1R)
-            {
+        //    if (PARAMDATA.Config.Kind == GameKind.DS1R)
+        //    {
                 
 
-                var info = new System.Diagnostics.ProcessStartInfo()
-                {
-                    FileName = "Res\\ModelReloaderDS1R\\ModelReloaderDS1R.exe",
-                    Arguments = $"param/Reload/{p.Key}.param",
-                    CreateNoWindow = true,
-                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
-                };
-                var newProc = System.Diagnostics.Process.Start(info);
+        //        var info = new System.Diagnostics.ProcessStartInfo()
+        //        {
+        //            FileName = "Res\\ModelReloaderDS1R\\ModelReloaderDS1R.exe",
+        //            Arguments = $"param/Reload/{p.Key}.param",
+        //            CreateNoWindow = true,
+        //            WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+        //        };
+        //        var newProc = System.Diagnostics.Process.Start(info);
 
-                newProc.WaitForExit();
-            }
-            else
-            {
-                string paramName = $"param/Reload/{p.Key}.param";
+        //        newProc.WaitForExit();
+        //    }
+        //    else
+        //    {
+        //        string paramName = $"param/Reload/{p.Key}.param";
 
-                if (!DarkSoulsScripting.Hook.DARKSOULS.Attached)
-                {
-                    if (!DarkSoulsScripting.Hook.DARKSOULS.TryAttachToDarkSouls(out string errorMsg))
-                    {
-                        MessageBox.Show($"Failed to hook to Dark Souls: PTDE\n\n{errorMsg}");
-                        return;
-                    }
-                }
+        //        if (!DarkSoulsScripting.Hook.DARKSOULS.Attached)
+        //        {
+        //            if (!DarkSoulsScripting.Hook.DARKSOULS.TryAttachToDarkSouls(out string errorMsg))
+        //            {
+        //                MessageBox.Show($"Failed to hook to Dark Souls: PTDE\n\n{errorMsg}");
+        //                return;
+        //            }
+        //        }
 
-                var stringAlloc = new DarkSoulsScripting.Injection.Structures.SafeRemoteHandle(paramName.Length * 2);
+        //        var stringAlloc = new DarkSoulsScripting.Injection.Structures.SafeRemoteHandle(paramName.Length * 2);
 
-                DarkSoulsScripting.Hook.WBytes(stringAlloc.GetHandle(), Encoding.Unicode.GetBytes(paramName));
+        //        DarkSoulsScripting.Hook.WBytes(stringAlloc.GetHandle(), Encoding.Unicode.GetBytes(paramName));
 
-                DarkSoulsScripting.Hook.CallCustomX86((asm) =>
-                {
-                    //asm.RawAsmBytes(new byte[] { 0x8B, 0x2D, 0xB0, 0x85, 0x37, 0x01 }); //mov ebp,[0x013785B0]
-                    asm.RawAsmBytes(new byte[] { 0x8B, 0x1D, 0xB0, 0x85, 0x37, 0x01 }); //mov ebx,[0x013785B0]
-                    asm.Mov32(Managed.X86.X86Register32.ECX, stringAlloc.GetHandle().ToInt32());
-                    asm.Push32(Managed.X86.X86Register32.ECX);
-                    asm.Call(new IntPtr(0x00D217B0));
-                    asm.Retn();
-                });
-            }
+        //        DarkSoulsScripting.Hook.CallCustomX86((asm) =>
+        //        {
+        //            //asm.RawAsmBytes(new byte[] { 0x8B, 0x2D, 0xB0, 0x85, 0x37, 0x01 }); //mov ebp,[0x013785B0]
+        //            asm.RawAsmBytes(new byte[] { 0x8B, 0x1D, 0xB0, 0x85, 0x37, 0x01 }); //mov ebx,[0x013785B0]
+        //            asm.Mov32(Managed.X86.X86Register32.ECX, stringAlloc.GetHandle().ToInt32());
+        //            asm.Push32(Managed.X86.X86Register32.ECX);
+        //            asm.Call(new IntPtr(0x00D217B0));
+        //            asm.Retn();
+        //        });
+        //    }
 
             
-        }
+        //}
 
         private void SetLoadingMode(bool isLoading)
         {
@@ -851,9 +851,9 @@ namespace MeowsBetterParamEditor
             ParamRowExportForDSParamLauncher();
         }
 
-        private void MenuToolsLiveRefreshParam_Click(object sender, RoutedEventArgs e)
-        {
-            LiveRefreshParam(PARAMDATA.Params.Where(x => x.Value == SelectedParam).First());
-        }
+        //private void MenuToolsLiveRefreshParam_Click(object sender, RoutedEventArgs e)
+        //{
+        //    LiveRefreshParam(PARAMDATA.Params.Where(x => x.Value == SelectedParam).First());
+        //}
     }
 }

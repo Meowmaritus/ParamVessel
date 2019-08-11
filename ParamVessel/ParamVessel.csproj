@@ -173,9 +173,6 @@
     <EmbeddedResource Include="EmbeddedResources\paramdef_DS1.paramdefbnd" />
     <EmbeddedResource Include="EmbeddedResources\paramdef_DS1R.paramdefbnd" />
     <EmbeddedResource Include="EmbeddedResources\paramdef_BB.paramdefbnd" />
-    <None Include="Res\ModelReloaderDS1R\ModelReloaderDS1R.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -201,10 +198,6 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DarkSoulsScripting\DarkSoulsScripting\DarkSoulsScripting.csproj">
-      <Project>{7d25328e-c261-4315-8131-0cf96153a357}</Project>
-      <Name>DarkSoulsScripting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MeowDSIO\MeowDSIO\MeowDSIO.csproj">
       <Project>{4ad69470-8146-4d20-94f0-da9844eee5a2}</Project>
       <Name>MeowDSIO</Name>
@@ -237,18 +230,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Lib\SharpDX.XInput.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Res\ModelReloaderDS1R\DS3Hook.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Res\ModelReloaderDS1R\DS3Hook.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Res\ModelReloaderDS1R\ModelReloaderDS1R.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Res\ModelReloaderDS1R\ModelReloaderDS1R.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
