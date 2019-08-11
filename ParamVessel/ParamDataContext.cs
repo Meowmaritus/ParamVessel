@@ -81,21 +81,9 @@ namespace MeowsBetterParamEditor
             ["AtkParam_Npc"] = "ATK_PARAM_ST (NPC)",
         };
 
-        public List<BND> PARAMBNDs = new List<BND>();
-        public BND PARAMDEFBND = new BND();
+        public List<DynamicParamBND> PARAMBNDs = new List<DynamicParamBND>();
 
-        private ObservableCollection<PARAMDEFRef> _paramDefs = new ObservableCollection<PARAMDEFRef>();
         private ObservableCollection<PARAMRef> _params = new ObservableCollection<PARAMRef>();
-
-        public ObservableCollection<PARAMDEFRef> ParamDefs
-        {
-            get => _paramDefs;
-            set
-            {
-                _paramDefs = value;
-                NotifyPropertyChanged(nameof(ParamDefs));
-            }
-        }
 
         public ObservableCollection<PARAMRef> Params
         {
@@ -126,24 +114,6 @@ namespace MeowsBetterParamEditor
             });
         }
 
-        private static readonly Dictionary<string, string> EmbeddedParamDefBndNameMap = new Dictionary<string, string>
-        {
-            [@"N:\FRPG\DATA\INTERROOT_WIN32\PARAMDEF"] = $"{nameof(MeowsBetterParamEditor)}.EmbeddedResources.paramdef_frpg.paramdefbnd",
-            [@"N:\SPRJ\DATA\INTERROOT_PS4\PARAMDEF\64BIT"] = $"{nameof(MeowsBetterParamEditor)}.EmbeddedResources.paramdef_sprj.paramdefbnd",
-            [@"N:\FRPG\DATA\INTERROOT_X64\PARAMDEF"] = $"{nameof(MeowsBetterParamEditor)}.EmbeddedResources.paramdef_frpg_x64.paramdefbnd"
-        };
-
-        private void LoadEmbeddedParamDefBnd(string internalParamDefFolder)
-        {
-            string embeddedParamDefBndName 
-                = EmbeddedParamDefBndNameMap[internalParamDefFolder.Trim('\\', '/').ToUpper()];
-            using (var stream = typeof(ParamDataContext).Assembly
-                .GetManifestResourceStream(embeddedParamDefBndName))
-            {
-                PARAMDEFBND = DataFile.LoadFromStream<BND>(stream, @"paramdef.paramdefbnd");
-            }
-        }
-
         private string CheckInternalParamDefDirectory()
         {
             var gameParamDefBnd = DataFile.LoadFromFile<BND>(Config.ParamDefBndPath);
@@ -157,34 +127,23 @@ namespace MeowsBetterParamEditor
 
             string internalParamDefDirectory = CheckInternalParamDefDirectory();
 
-            LoadEmbeddedParamDefBnd(internalParamDefDirectory);
-
             PARAMBNDs.Clear();
             var UPCOMING_Params = new ObservableCollection<PARAMRef>();
 
-            ParamDefs.Clear();
-            var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, $"*.parambnd{(Config.IsRemaster ? ".dcx" : "")}")
-                .Where(p => new FileInfo(p).Name.ToLower() == $"gameparam.parambnd{(Config.IsRemaster ? ".dcx" : "")}")
-                .Select(p => DataFile.LoadFromFile<BND>(p));
+            var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, $"*.parambnd{(Config.IsDCX ? ".dcx" : "")}")
+                .Where(p => new FileInfo(p).Name.ToLower() == $"gameparam.parambnd{(Config.IsDCX ? ".dcx" : "")}")
+                .Select(p => DynamicParamBND.Load(p, Config.Kind == GameKind.BB));
 
-            var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, $"*.parambnd{(Config.IsRemaster ? ".dcx" : "")}")
-                .Select(p => DataFile.LoadFromFile<BND>(p));
+            var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, $"*.parambnd{(Config.IsDCX ? ".dcx" : "")}")
+                .Select(p => DynamicParamBND.Load(p, Config.Kind == GameKind.BB));
 
             PARAMBNDs = gameparamBnds.Concat(drawparamBnds).ToList();
 
-            foreach (var paramDef in PARAMDEFBND)
-            {
-                var newParamDefName = IOHelper.RemoveExtension(new FileInfo(paramDef.Name).Name, EXT_PARAMDEF);
-                ParamDefs.Add(new PARAMDEFRef(newParamDefName, paramDef.ReadDataAs<PARAMDEF>()));
-            }
-
             for (int i = 0; i < PARAMBNDs.Count; i++)
             {
-                foreach (var param in PARAMBNDs[i])
+                foreach (var newParam in PARAMBNDs[i].Params)
                 {
-                    var newParam = param.ReadDataAs<PARAM>();
-                    var newParamName = IOHelper.RemoveExtension(new FileInfo(param.Name).Name, EXT_PARAM);
-                    newParam.ApplyPARAMDEFTemplate(ParamDefs.Where(x => x.Value.ID == newParam.ID).First().Value);
+                    var newParamName = IOHelper.RemoveExtension(new FileInfo(newParam.VirtualUri).Name, EXT_PARAM);
                     string newParamBndName = MiscUtil.GetFileNameWithoutDirectoryOrExtension(new FileInfo(PARAMBNDs[i].FilePath).Name);
 
                     newParamBndName = MiscUtil.GetFileNameWithoutDirectoryOrExtension(newParamBndName);
@@ -369,7 +328,7 @@ namespace MeowsBetterParamEditor
                 foreach (var bnd in PARAMBNDs)
                 {
                     bnd.RestoreBackup();
-                    DataFile.Reload(bnd);
+                    bnd.Reload();
                 }
 
                 LoadAllPARAMs();
@@ -390,34 +349,36 @@ namespace MeowsBetterParamEditor
                     backupsCreated.Add(paramBnd.FileBackupPath);
                 }
 
-                foreach (var param in paramBnd)
-                {
-                    string paramName = IOHelper.RemoveExtension(new FileInfo(param.Name).Name, EXT_PARAM);
-                    var matchingParams = Params.Where(x => x.Key == paramName);
+                //foreach (var param in paramBnd.Params)
+                //{
+                //    string paramName = IOHelper.RemoveExtension(new FileInfo(param.VirtualUri).Name, EXT_PARAM);
+                //    var matchingParams = Params.Where(x => x.Key == paramName);
 
-                    if (matchingParams.Any())
-                    {
-                        var matchingParam = matchingParams.First().Value;
-                        if (matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONEMAPBANK"))
-                        {
-                            matchingParam.EntrySize = 48;
-                        }
-                        else if (matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONECORRECTBANK") ||
-                            matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\DEFAULT_TONECORRECTBANK"))
-                        {
-                            matchingParam.EntrySize = 36;
-                        }
-                        param.ReplaceData(matchingParam);
-                    }
-                    else
-                    {
-                        MessageBox.Show($"Param \"{paramName}\" was not found " +
-                            $"in \"{new FileInfo(paramBnd.FilePath).Name}\".", 
-                            "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                }
+                //    if (matchingParams.Any())
+                //    {
+                //        var matchingParam = matchingParams.First().Value;
+                //        if (Config.Kind == GameKind.DS1R && matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONEMAPBANK"))
+                //        {
+                //            matchingParam.EntrySize = 48;
+                //        }
+                //        else if (Config.Kind == GameKind.DS1R && (matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\M99_TONECORRECTBANK") ||
+                //            matchingParam.VirtualUri.ToUpper().Contains(@"_X64\PARAM\DRAWPARAM\DEFAULT_TONECORRECTBANK")))
+                //        {
+                //            matchingParam.EntrySize = 36;
+                //        }
+                //        param.ReplaceData(matchingParam);
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show($"Param \"{paramName}\" was not found " +
+                //            $"in \"{new FileInfo(paramBnd.FilePath).Name}\".", 
+                //            "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //    }
+                //}
 
-                DataFile.Resave(paramBnd);
+                //DataFile.Resave(paramBnd);
+
+                paramBnd.Resave();
             }
         }
 

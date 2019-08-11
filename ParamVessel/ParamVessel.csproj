@@ -113,6 +113,7 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DynamicParamBND.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IOHelper.cs" />
     <Compile Include="ParamCellEditTemplateSelector.cs" />
@@ -169,9 +170,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="EmbeddedResources\paramdef_frpg.paramdefbnd" />
-    <EmbeddedResource Include="EmbeddedResources\paramdef_sprj.paramdefbnd" />
-    <EmbeddedResource Include="EmbeddedResources\paramdef_frpg_x64.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResources\paramdef_DS1.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResources\paramdef_DS1R.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResources\paramdef_BB.paramdefbnd" />
+    <None Include="Res\ModelReloaderDS1R\ModelReloaderDS1R.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -197,10 +201,61 @@
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DarkSoulsScripting\DarkSoulsScripting\DarkSoulsScripting.csproj">
+      <Project>{7d25328e-c261-4315-8131-0cf96153a357}</Project>
+      <Name>DarkSoulsScripting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MeowDSIO\MeowDSIO\MeowDSIO.csproj">
       <Project>{4ad69470-8146-4d20-94f0-da9844eee5a2}</Project>
       <Name>MeowDSIO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SoulsFormats\SoulsFormats.csproj">
+      <Project>{22c664bd-877b-44df-8ecf-2808522469a8}</Project>
+      <Name>SoulsFormats</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Lib\SharpDX.Direct2D1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.Direct3D11.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.Direct3D9.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.DXGI.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.MediaFoundation.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.XAudio2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Lib\SharpDX.XInput.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Res\ModelReloaderDS1R\DS3Hook.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Res\ModelReloaderDS1R\DS3Hook.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Res\ModelReloaderDS1R\ModelReloaderDS1R.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Res\ModelReloaderDS1R\ModelReloaderDS1R.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>; Move all assemblies and related files to lib folder
+ROBOCOPY "$(TargetDir) " "$(TargetDir)lib\ " /XF *.exe *.config *.manifest *.ini *.zip *FBX2FLVER.pdb /XD lib logs data /E /IS /MOVE
+if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+  </PropertyGroup>
 </Project>

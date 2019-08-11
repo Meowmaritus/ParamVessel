@@ -8,6 +8,16 @@ using System.Threading.Tasks;
 
 namespace MeowsBetterParamEditor
 {
+    public enum GameKind
+    {
+        //DeS,
+        DS1,
+        DS1R,
+        //DS2,
+        //DS3,
+        BB,
+    }
+
     public class UserConfig : INotifyPropertyChanged
     {
         [JsonIgnore]
@@ -31,10 +41,6 @@ namespace MeowsBetterParamEditor
                 NotifyPropertyChanged(nameof(DrawParamFolder));
                 NotifyPropertyChanged(nameof(ParamDefBndPath));
                 NotifyPropertyChanged(nameof(ParamFolder));
-
-                IsRemaster = System.IO.Directory.GetFiles(GameParamFolder).Any(x => x.ToUpper().EndsWith(".DCX"));
-
-                NotifyPropertyChanged(nameof(IsRemaster));
             }
         }
 
@@ -59,7 +65,20 @@ namespace MeowsBetterParamEditor
             }
         }
 
-        public bool IsRemaster { get; set; } = false;
+        private GameKind _kind = GameKind.DS1;
+        public GameKind Kind
+        {
+            get => _kind;
+            set
+            {
+                _kind = value;
+                NotifyPropertyChanged(nameof(Kind));
+                NotifyPropertyChanged(nameof(IsDCX));
+            }
+        }
+
+        [JsonIgnore]
+        public bool IsDCX => Kind != GameKind.DS1;
 
         [JsonIgnore]
         public string GameParamFolder
@@ -75,7 +94,7 @@ namespace MeowsBetterParamEditor
 
         [JsonIgnore]
         public string ParamDefBndPath
-            => IOHelper.Frankenpath(InterrootPath, $"paramdef\\paramdef.paramdefbnd{(IsRemaster ? ".dcx" : "")}");
+            => IOHelper.Frankenpath(InterrootPath, $"paramdef\\paramdef.paramdefbnd{(Kind != GameKind.DS1 ? ".dcx" : "")}");
 
         public event PropertyChangedEventHandler PropertyChanged;
 

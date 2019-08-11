@@ -38,6 +38,67 @@ namespace MeowsBetterParamEditor
             //PARAMDATA.DEBUG_RestoreBackupsLoadResave();
         }
 
+        public void LiveRefreshParam(PARAMRef p)
+        {
+            //MessageBox.Show(p.Key);
+
+            if (p.Value.FilePath == null && p.Value.VirtualUri == null)
+            {
+                p.Value.FilePath = $"param/Reload/{p.Key}.param";
+            }
+            string paramReloadFolder = IOHelper.Frankenpath(PARAMDATA.Config.InterrootPath, $"param/Reload");
+
+            if (!Directory.Exists(paramReloadFolder))
+                Directory.CreateDirectory(paramReloadFolder);
+
+            DataFile.SaveToFile(p.Value, IOHelper.Frankenpath(paramReloadFolder, $"{p.Key}.param"));
+
+            if (PARAMDATA.Config.Kind == GameKind.DS1R)
+            {
+                
+
+                var info = new System.Diagnostics.ProcessStartInfo()
+                {
+                    FileName = "Res\\ModelReloaderDS1R\\ModelReloaderDS1R.exe",
+                    Arguments = $"param/Reload/{p.Key}.param",
+                    CreateNoWindow = true,
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                };
+                var newProc = System.Diagnostics.Process.Start(info);
+
+                newProc.WaitForExit();
+            }
+            else
+            {
+                string paramName = $"param/Reload/{p.Key}.param";
+
+                if (!DarkSoulsScripting.Hook.DARKSOULS.Attached)
+                {
+                    if (!DarkSoulsScripting.Hook.DARKSOULS.TryAttachToDarkSouls(out string errorMsg))
+                    {
+                        MessageBox.Show($"Failed to hook to Dark Souls: PTDE\n\n{errorMsg}");
+                        return;
+                    }
+                }
+
+                var stringAlloc = new DarkSoulsScripting.Injection.Structures.SafeRemoteHandle(paramName.Length * 2);
+
+                DarkSoulsScripting.Hook.WBytes(stringAlloc.GetHandle(), Encoding.Unicode.GetBytes(paramName));
+
+                DarkSoulsScripting.Hook.CallCustomX86((asm) =>
+                {
+                    //asm.RawAsmBytes(new byte[] { 0x8B, 0x2D, 0xB0, 0x85, 0x37, 0x01 }); //mov ebp,[0x013785B0]
+                    asm.RawAsmBytes(new byte[] { 0x8B, 0x1D, 0xB0, 0x85, 0x37, 0x01 }); //mov ebx,[0x013785B0]
+                    asm.Mov32(Managed.X86.X86Register32.ECX, stringAlloc.GetHandle().ToInt32());
+                    asm.Push32(Managed.X86.X86Register32.ECX);
+                    asm.Call(new IntPtr(0x00D217B0));
+                    asm.Retn();
+                });
+            }
+
+            
+        }
+
         private void SetLoadingMode(bool isLoading)
         {
             MainGrid.Opacity = isLoading ? 0.25 : 1;
@@ -67,17 +128,31 @@ namespace MeowsBetterParamEditor
                 CheckPathExists = true,
                 Multiselect = false,
                 FileName = "DARKSOULS.exe",
-                Filter = "Executable Files (*.EXE)|*.EXE",
                 ShowReadOnly = false,
-                Title = "Choose your DARKSOULS.exe or DarkSoulsRemastered.exe file...",
+                Title = "Choose your DARKSOULS.exe, DarkSoulsRemastered.exe, or EBOOT.BIN file...",
                 ValidateNames = true
             };
 
 
 
-            if ((browseDialog.ShowDialog() ?? false) == true)
+            if (browseDialog.ShowDialog() == true)
             {
                 var interrootDir = new FileInfo(browseDialog.FileName).DirectoryName;
+
+                if (browseDialog.FileName.ToUpper().EndsWith(".BIN"))
+                {
+                    PARAMDATA.Config.Kind = GameKind.BB;
+                    interrootDir = interrootDir.TrimEnd('\\', '/') + @"\dvdroot_ps4";
+                }
+                else if (browseDialog.FileName.ToUpper().Contains("DARKSOULSREMASTERED"))
+                {
+                    PARAMDATA.Config.Kind = GameKind.DS1R;
+                }
+                else if (browseDialog.FileName.ToUpper().Contains("DARKSOULS"))
+                {
+                    PARAMDATA.Config.Kind = GameKind.DS1;
+                }
+
                 if (CheckInterrotDirValid(interrootDir))
                 {
                     PARAMDATA.Config.InterrootPath = interrootDir;
@@ -88,30 +163,43 @@ namespace MeowsBetterParamEditor
                 {
                     var sb = new StringBuilder();
 
-                    sb.AppendLine(@"Directory of EXE chosen did not include the following directories/files which are required:");
-                    sb.AppendLine(@" - '.\param\DrawParam\'");
-                    sb.AppendLine(@" - '.\param\GameParam\'");
-                    sb.AppendLine(@" - '.\paramdef\'");
-
-                    if (CheckIfUdsfmIsProbablyNotInstalled(interrootDir))
+                    if (PARAMDATA.Config.Kind == GameKind.BB)
                     {
-                        sb.AppendLine();
-                        sb.AppendLine();
-                        sb.AppendLine("Warning: This installation does not appear to be unpacked with " +
-                            "UnpackDarkSoulsForModding because it meets one or more of the " +
-                            "criteria below:");
-
-                        sb.AppendLine(@" - '.\unpackDS-backup' does not exist.");
-                        sb.AppendLine(@" - '.\dvdbnd0.bdt' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd1.bdt' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd2.bdt' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd3.bdt' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd0.bhd5' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd1.bhd5' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd2.bhd5' exists.");
-                        sb.AppendLine(@" - '.\dvdbnd3.bhd5' exists.");
+                        sb.AppendLine(@"Directory of EBOOT.BIN chosen did not include the following directories/files which are required:");
+                        sb.AppendLine(@" - '.\dvdroot_ps4\param\DrawParam\'");
+                        sb.AppendLine(@" - '.\dvdroot_ps4\param\GameParam\'");
+                        sb.AppendLine(@" - '.\dvdroot_ps4\paramdef\'");
                     }
-                    
+                    else
+                    {
+                        sb.AppendLine(@"Directory of executable chosen did not include the following directories/files which are required:");
+                        sb.AppendLine(@" - '.\param\DrawParam\'");
+                        sb.AppendLine(@" - '.\param\GameParam\'");
+                        sb.AppendLine(@" - '.\paramdef\'");
+                    }
+
+                    if (PARAMDATA.Config.Kind == GameKind.DS1)
+                    {
+                        if (CheckIfUdsfmIsProbablyNotInstalled(interrootDir))
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine();
+                            sb.AppendLine("Warning: This installation does not appear to be unpacked with " +
+                                "UnpackDarkSoulsForModding because it meets one or more of the " +
+                                "criteria below:");
+
+                            sb.AppendLine(@" - '.\unpackDS-backup' does not exist.");
+                            sb.AppendLine(@" - '.\dvdbnd0.bdt' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd1.bdt' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd2.bdt' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd3.bdt' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd0.bhd5' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd1.bhd5' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd2.bhd5' exists.");
+                            sb.AppendLine(@" - '.\dvdbnd3.bhd5' exists.");
+                        }
+                    }
+
                     MessageBox.Show(
                         sb.ToString(), 
                         "Invalid Directory", 
@@ -143,7 +231,23 @@ namespace MeowsBetterParamEditor
                 Directory.Exists(IOHelper.Frankenpath(dir, @"paramdef"));
         }
 
-        //private void RANDOM_DEBUG_TESTING()
+        private void RANDOM_DEBUG_TESTING()
+        {
+            //var sb = new StringBuilder();
+
+            //foreach (var def in PARAMDATA.ParamDefs)
+            //{
+            //    sb.AppendLine($"{def.Key}:");
+            //    foreach (var field in def.Value)
+            //    {
+            //        sb.AppendLine($"    {field.InternalValueType} {field.Name}; //{field.DisplayName} <- {field.Description}");
+            //    }
+            //}
+
+            //Clipboard.SetText(sb.ToString(), TextDataFormat.UnicodeText);
+            //MessageBox.Show("fatcat");
+
+        }
         //{
         //    //var uniqueInternalDataTypes = new List<string>();
         //    //foreach (var p in PARAMDATA.ParamDefs)
@@ -317,10 +421,10 @@ namespace MeowsBetterParamEditor
             {
                 if (MessageBox.Show("If you are using non-remastered Dark Souls: Prepare to Die Edition, your installation " +
                     "MUST be unpacked by UnpackDarkSoulsForModding by HotPocketRemix.\n\n" +
-                    @"Please navigate to your 'DARKSOULS.exe' or 'DarkSoulsRemastered.exe' file." +
+                    @"Please navigate to your 'DARKSOULS.exe', 'DarkSoulsRemastered.exe', or EBOOT.BIN file." +
                     "\n\nOnce the inital setup is performed, the path will be saved." +
                     "\nYou may press cancel to continue without selecting the path but the GUI will " +
-                    "be blank until you go to 'File -> Select Dark Souls Directory...'",
+                    "be blank until you go to 'File -> Select Game Executable...'",
                     "Initial Setup", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
                 {
                     await BrowseForInterrootDialog(SetLoadingMode);
@@ -330,7 +434,7 @@ namespace MeowsBetterParamEditor
 
             MainTabs.Items.Refresh();
 
-            //RANDOM_DEBUG_TESTING();
+            RANDOM_DEBUG_TESTING();
         }
 
         private void CmdSave_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -452,49 +556,49 @@ namespace MeowsBetterParamEditor
 
         private void MenuPatchParamDefs_Click(object sender, RoutedEventArgs e)
         {
-            if (PARAMDATA.Config.IsRemaster)
-            {
-                MessageBox.Show("This option only works on Dark Souls: Prepare to Die Edition.", "Not Supported", MessageBoxButton.OK, MessageBoxImage.Hand);
-                return;
-            }
+            //if (PARAMDATA.Config.Kind != GameKind.DS1)
+            //{
+            //    MessageBox.Show("This option only works on Dark Souls: Prepare to Die Edition.", "Not Supported", MessageBoxButton.OK, MessageBoxImage.Hand);
+            //    return;
+            //}
 
-            if (MessageBox.Show("This modification, which works only on PTDE, not the remaster, will replace the Japanese display names of the variables" +
-                " in the ParamDefs with their internal variable names, which are in English. " +
-                "\nThese display names are used in the Dark Souls debug menu's '[PARAM MAN]' submenu. " +
-                "\nNo more blindly adjusting Japanese-named variables." +
-                "\n\nThis would modify the './paramdef/paramdef.paramdefbnd' file only. " +
-                "\nA backup ('./paramdef/paramdef.paramdefbnd.bak') will be created before the modification is made." +
-                "\n\nProceed with modification?", "Apply Modification?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                if (!File.Exists(PARAMDATA.Config.ParamDefBndPath + ".bak"))
-                {
-                    File.Copy(PARAMDATA.Config.ParamDefBndPath, PARAMDATA.Config.ParamDefBndPath + ".bak");
-                }
+            //if (MessageBox.Show("This modification, which works only on PTDE, not the remaster, will replace the Japanese display names of the variables" +
+            //    " in the ParamDefs with their internal variable names, which are in English. " +
+            //    "\nThese display names are used in the Dark Souls debug menu's '[PARAM MAN]' submenu. " +
+            //    "\nNo more blindly adjusting Japanese-named variables." +
+            //    "\n\nThis would modify the './paramdef/paramdef.paramdefbnd' file only. " +
+            //    "\nA backup ('./paramdef/paramdef.paramdefbnd.bak') will be created before the modification is made." +
+            //    "\n\nProceed with modification?", "Apply Modification?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            //{
+            //    if (!File.Exists(PARAMDATA.Config.ParamDefBndPath + ".bak"))
+            //    {
+            //        File.Copy(PARAMDATA.Config.ParamDefBndPath, PARAMDATA.Config.ParamDefBndPath + ".bak");
+            //    }
 
-                try
-                {
-                    PARAMDATA.ApplyParamDefEnglishPatch();
+            //    try
+            //    {
+            //        PARAMDATA.ApplyParamDefEnglishPatch();
 
-                    MessageBox.Show("Modification applied successfully.");
-                }
-                catch (Exception ex)
-                {
-                    if (File.Exists(PARAMDATA.Config.ParamDefBndPath + ".bak"))
-                    {
-                        File.Copy(PARAMDATA.Config.ParamDefBndPath + ".bak", PARAMDATA.Config.ParamDefBndPath, true);
-                        MessageBox.Show("An error occurred while modifying the file (shown below). " +
-                            "The file has been restored to a backup of its original state." + "\n\n" + ex.Message);
-                    }
-                    else
-                    {
-                        DataFile.SaveToFile(PARAMDATA.PARAMDEFBND, PARAMDATA.Config.ParamDefBndPath, null);
+            //        MessageBox.Show("Modification applied successfully.");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        if (File.Exists(PARAMDATA.Config.ParamDefBndPath + ".bak"))
+            //        {
+            //            File.Copy(PARAMDATA.Config.ParamDefBndPath + ".bak", PARAMDATA.Config.ParamDefBndPath, true);
+            //            MessageBox.Show("An error occurred while modifying the file (shown below). " +
+            //                "The file has been restored to a backup of its original state." + "\n\n" + ex.Message);
+            //        }
+            //        else
+            //        {
+            //            DataFile.SaveToFile(PARAMDATA.PARAMDEFBND, PARAMDATA.Config.ParamDefBndPath, null);
 
-                        MessageBox.Show("An error occurred while modifying the file (shown below). " +
-                            "The backup of the file's original state could not be retrieved. " +
-                            "The file has been replaced with the default vanilla file." + "\n\n" + ex.Message);
-                    }
-                }
-            }
+            //            MessageBox.Show("An error occurred while modifying the file (shown below). " +
+            //                "The backup of the file's original state could not be retrieved. " +
+            //                "The file has been replaced with the default vanilla file." + "\n\n" + ex.Message);
+            //        }
+            //    }
+            //}
         }
 
         private void MenuRandomize_Click(object sender, RoutedEventArgs e)
@@ -547,8 +651,9 @@ namespace MeowsBetterParamEditor
                 newParamRow.ID = selectedParamRow.ID;
                 newParamRow.Name = selectedParamRow.Name;
             }
-            
 
+            newParamRow.ReInitRawData(selectedParam.Value);
+            newParamRow.LoadValuesFromRawData(selectedParam.Value);
             newParamRow.SaveDefaultValuesToRawData(selectedParam.Value);
             newParamRow.LoadValuesFromRawData(selectedParam.Value);
 
@@ -744,6 +849,11 @@ namespace MeowsBetterParamEditor
         private void ContextMenuParamRow_ExportForDSParamLauncher_Click(object sender, RoutedEventArgs e)
         {
             ParamRowExportForDSParamLauncher();
+        }
+
+        private void MenuToolsLiveRefreshParam_Click(object sender, RoutedEventArgs e)
+        {
+            LiveRefreshParam(PARAMDATA.Params.Where(x => x.Value == SelectedParam).First());
         }
     }
 }

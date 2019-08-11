@@ -218,7 +218,7 @@
                 <MenuItem Header="File">
                     <MenuItem 
                         Name="MenuSelectDarkSoulsDirectory"
-                        Header="Select Dark Souls Directory..." 
+                        Header="Select Game Executable..." 
                         Click="MenuSelectDarkSoulsDirectory_Click"
                         />
                     <MenuItem 
@@ -251,19 +251,25 @@
                         Opacity="0.25" 
                         />
                 </MenuItem>-->
-                <MenuItem Header="Tools">
-                    <MenuItem
+                <!--<MenuItem Header="Tools">
+                    --><!--<MenuItem
                         x:Name="MenuPatchParamDefs"
                         Header="Apply [PARAM MAN] English Variable Name Patch (PTDE-only)"
                         Click="MenuPatchParamDefs_Click"
+                        />--><!--
+
+                    <MenuItem
+                        x:Name="MenuToolsLiveRefreshParam"
+                        Header="TEST: Force Param Reload Ingame"
+                        Click="MenuToolsLiveRefreshParam_Click"
                         />
 
-                    <!--<MenuItem
+                    --><!--<MenuItem
                         x:Name="MenuRandomize"
                         Header="Randomize All Parameters (Dangerous but fun. Backup your saves, kids)"
                         Click="MenuRandomize_Click"
-                        />-->
-                </MenuItem>
+                        />--><!--
+                </MenuItem>-->
                 <MenuItem 
                     x:Name="MenuAbout"
                     Header="By Meowmaritus"
@@ -416,7 +422,7 @@
                                 <TextBox 
                                 Text="{Binding ID}"
                                 Padding="0"
-                                Margin="2"
+                                Margin="0"
                                 VerticalContentAlignment="Center"
                                 FontWeight="Bold"
                                 Foreground="White"
@@ -434,11 +440,12 @@
                             <DataTemplate>
                                 <TextBlock 
                                     Text="{Binding Name}"
-                                    FontFamily="Courier New"
-                                    Typography.EastAsianWidths="Normal"
-                                    Typography.EastAsianExpertForms="False"
+                                    FontFamily="Segoe UI"
+                                    FontSize="14"
+                                    Padding="0"
+                                    Margin="0"
                                     Foreground="White"
-                                    Height="16"
+                                    Height="18"
                                     />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -447,9 +454,11 @@
                                 <TextBox 
                                     Text="{Binding Name}"
                                     Padding="0"
-                                    Margin="2"
+                                    Margin="0"
+                                    FontFamily="Segoe UI"
+                                    FontSize="14"
+                                    Height="18"
                                     VerticalContentAlignment="Center"
-                                    FontWeight="Bold"
                                     Foreground="White"
                                     />
                             </DataTemplate>
