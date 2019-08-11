@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4AD69470-8146-4D20-94F0-DA9844EEE5A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MeowDSIO</RootNamespace>
+    <AssemblyName>MeowDSIO</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>embedded</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LIB\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data.cs" />
+    <Compile Include="DataFile.cs" />
+    <Compile Include="DataFiles\FFXBND.cs" />
+    <Compile Include="DataFiles\ANIBND.cs" />
+    <Compile Include="DataFiles\BND.cs" />
+    <Compile Include="DataFiles\DCX.cs" />
+    <Compile Include="DataFiles\EntityBND.cs" />
+    <Compile Include="DataFiles\ESD.cs" />
+    <Compile Include="DataFiles\FLVER.cs" />
+    <Compile Include="DataFiles\FLVEROptimized.cs" />
+    <Compile Include="DataFiles\FMG.cs" />
+    <Compile Include="DataFiles\GenericBinaryFile.cs" />
+    <Compile Include="DataFiles\LUAGNL.cs" />
+    <Compile Include="DataFiles\LUAINFO.cs" />
+    <Compile Include="DataFiles\MCG.cs" />
+    <Compile Include="DataFiles\MCP.cs" />
+    <Compile Include="DataFiles\MSB.cs" />
+    <Compile Include="DataFiles\MSGBND.cs" />
+    <Compile Include="DataFiles\MTD.cs" />
+    <Compile Include="DataFiles\MtdBND.cs" />
+    <Compile Include="DataFiles\PARAM.cs" />
+    <Compile Include="DataFiles\PARAMBND.cs" />
+    <Compile Include="DataFiles\PARAMDEF.cs" />
+    <Compile Include="DataFiles\PARAMDEFBND.cs" />
+    <Compile Include="DataFiles\REMOBND.cs" />
+    <Compile Include="DataFiles\TAE.cs" />
+    <Compile Include="DataFiles\TPF.cs" />
+    <Compile Include="DataTypes\BND\BNDEntry.cs" />
+    <Compile Include="DataTypes\BND\BNDEntryHeaderBuffer.cs" />
+    <Compile Include="DataTypes\BND\BNDHeader.cs" />
+    <Compile Include="DataTypes\BND\BndVersion.cs" />
+    <Compile Include="DataTypes\EntityBND\EntityModel.cs" />
+    <Compile Include="DataTypes\FLVER\FlverGeometryBuffer.cs" />
+    <Compile Include="DataTypes\FLVER\VertexPositionColorNormalTangentTexture.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverVector3.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverVertexColor.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverPackedVector4.cs" />
+    <Compile Include="DataTypes\FLVER\FlverWriteFunc_MaterialInfo.cs" />
+    <Compile Include="DataTypes\FLVER\FlverWriteFunc_SubmeshInfo.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverBoneIndices.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverBoneWeights.cs" />
+    <Compile Include="DataTypes\FLVER\FlverBone.cs" />
+    <Compile Include="DataTypes\FLVER\FlverFaceSet.cs" />
+    <Compile Include="DataTypes\FLVER\FlverFaceSetFlags.cs" />
+    <Compile Include="DataTypes\FLVER\FlverHeader.cs" />
+    <Compile Include="DataTypes\FLVER\FlverDummy.cs" />
+    <Compile Include="DataTypes\FLVER\FlverMaterial.cs" />
+    <Compile Include="DataTypes\FLVER\FlverMaterialParameter.cs" />
+    <Compile Include="DataTypes\FLVER\[Fields]\FlverUV.cs" />
+    <Compile Include="DataTypes\FLVER\FlverSubmesh.cs" />
+    <Compile Include="DataTypes\FLVER\FlverVertex.cs" />
+    <Compile Include="DataTypes\FLVER\FlverVertexGroup.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructLayout.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructLayoutCheck.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMemberSemantic.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMemberValueType.cs" />
+    <Compile Include="DataTypes\FLVER\[IOSpecific]\FlverVertexStructMember.cs" />
+    <Compile Include="DataTypes\FMGBND\FMGBNDEnums.cs" />
+    <Compile Include="DataTypes\FMG\FMGChunk.cs" />
+    <Compile Include="DataTypes\FMG\FMGChunkHeaderBuffer.cs" />
+    <Compile Include="DataTypes\FMG\FMGHeader.cs" />
+    <Compile Include="DataTypes\FMG\VanillaFMG.cs" />
+    <Compile Include="DataTypes\LUAINFO\Goal.cs" />
+    <Compile Include="DataTypes\LUAINFO\LUAINFOHeader.cs" />
+    <Compile Include="DataTypes\LUAINFO\ScriptRef.cs" />
+    <Compile Include="DataTypes\LUAGNL\StringRef.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventBloodMsg.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventEnvironment.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventGenerator.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventMapOffset.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventNavimesh.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventNpcWorldInvitation.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventObjAct.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventSFX.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventSound.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventSpawnPoint.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventTreasure.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventWindSFX.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelCharacter.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelCollision.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelMapPiece.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelNavimesh.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelObject.cs" />
+    <Compile Include="DataTypes\MSB\MODEL_PARAM_ST\MsbModelPlayer.cs" />
+    <Compile Include="DataTypes\MSB\MsbModelBase.cs" />
+    <Compile Include="DataTypes\MSB\MsbModelList.cs" />
+    <Compile Include="DataTypes\MSB\MsbPartsList.cs" />
+    <Compile Include="DataTypes\MSB\MsbEventList.cs" />
+    <Compile Include="DataTypes\MSB\MsbPartsBase.cs" />
+    <Compile Include="DataTypes\MSB\MsbEventBase.cs" />
+    <Compile Include="DataTypes\MSB\EVENT_PARAM_ST\MsbEventLight.cs" />
+    <Compile Include="DataTypes\MSB\MsbEnums.cs" />
+    <Compile Include="DataTypes\MSB\MsbRegionBase.cs" />
+    <Compile Include="DataTypes\MSB\MsbRegionList.cs" />
+    <Compile Include="DataTypes\MSB\MsbStruct.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsConnectHit.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsHit.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsMapPiece.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsNavimesh.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsNPC.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsNPCDummy.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsObject.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsObjectDummy.cs" />
+    <Compile Include="DataTypes\MSB\PARTS_PARAM_ST\MsbPartsPlayer.cs" />
+    <Compile Include="DataTypes\MSB\POINT_PARAM_ST\MsbRegionBox.cs" />
+    <Compile Include="DataTypes\MSB\POINT_PARAM_ST\MsbRegionCylinder.cs" />
+    <Compile Include="DataTypes\MSB\POINT_PARAM_ST\MsbRegionPoint.cs" />
+    <Compile Include="DataTypes\MSB\POINT_PARAM_ST\MsbRegionSphere.cs" />
+    <Compile Include="DataTypes\MTD\ExternalParam.cs" />
+    <Compile Include="DataTypes\MTD\InternalParam.cs" />
+    <Compile Include="DataTypes\MTD\MTDEnums.cs" />
+    <Compile Include="DataTypes\PARAMBND\PARAMBNDEntry.cs" />
+    <Compile Include="DataTypes\PARAMDEFBND\PARAMDEFBNDEntry.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ATK_PARAM_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\EQUIP_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ITEMLOT_CUMULATE_RESET.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ITEMLOT_ENABLE_LUCK.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\MAGIC_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\NPC_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\ON_OFF.cs" />
+    <Compile Include="DataTypes\PARAMDEF\Enums\SP_EFFECT_BOOL.cs" />
+    <Compile Include="DataTypes\PARAMDEF\ParamDefEntry.cs" />
+    <Compile Include="DataTypes\PARAMDEF\ParamTypeDef.cs" />
+    <Compile Include="DataTypes\PARAM\ParamRow.cs" />
+    <Compile Include="DataTypes\PARAM\ParamCellValueRef.cs" />
+    <Compile Include="DataTypes\REMOBND\RemoCutEntry.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae161.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae208.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae210.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae209.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae218.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae176.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae255.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae234.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae219.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae217.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae199.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae198.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae197.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae196.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae183.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae182.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae181.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae180.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae162.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae160.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae102.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae021.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae020.cs" />
+    <Compile Include="DataTypes\TAE\Events\Remo_Tae200.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae119.cs" />
+    <Compile Include="DataTypes\TAE\Events\DeS_Tae230.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae400.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae500.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae401.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae308.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae307_DoBehaviorKnockback.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae306.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae304_DoThrowDamage.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae303_PlayAnimation.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae302.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae301.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae300_SetValue.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae236.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae233.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae232.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae231.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae229.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae228.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae226.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae225.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae224_SetChrTrackingSpeed.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae193_SetChrOpacity.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae145_RumbleCamGlobal.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae144_RumbleCamOnDmy.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae130_SoundOther.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae129_SoundDmyPoly.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae128_SoundBody.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae121.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae120.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae118_WeaponTrail.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae116.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae115.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae114.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae112.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae110_DoSomethingToSFXSlotB.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae109_SpawnSFXAtDmyE.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae108_SpawnSFXAtDmyAndFollow.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae104_SpawnSFXAtDmyD.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae101_DoSomethingToSFXSlot.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae100_SpawnSFXAtDmyC.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae099_SpawnSFXAtDmyB.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae096_SpawnSFXAtDmy.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae067_ApplySpEffectB.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae066_ApplySpEffect.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae065.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae064_CastSelectedSpell.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae033.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae024.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae032.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae016_SetEventEditorColors.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae008.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae005_DoBehaviorCommon.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae002_DoBehaviorBullet.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae001_DoBehaviorAtk.cs" />
+    <Compile Include="DataTypes\TAE\Events\Tae000_DoCommand.cs" />
+    <Compile Include="DataTypes\TAE\TaeEnums.cs" />
+    <Compile Include="DataTypes\TAE\TAEHeader.cs" />
+    <Compile Include="DataTypes\TAE\TimeActEventBase.cs" />
+    <Compile Include="DataTypes\TAE\TimeActEventGroup.cs" />
+    <Compile Include="DataTypes\TPF\TPFEntry.cs" />
+    <Compile Include="DataTypes\TPF\TPFEntryReadBuffer.cs" />
+    <Compile Include="DSBinaryReader.Endianness.cs" />
+    <Compile Include="DSBinaryReader.Utils.cs" />
+    <Compile Include="DSBinaryWriter.Endianness.cs" />
+    <Compile Include="DSBinaryWriter.Utils.cs" />
+    <Compile Include="Exceptions\DSIOException.cs" />
+    <Compile Include="Exceptions\DSIOExceptionType.cs" />
+    <Compile Include="Exceptions\DSReadException.cs" />
+    <Compile Include="Exceptions\DSRead\ConsumeValueCheckFailedException.cs" />
+    <Compile Include="Exceptions\DSWriteException.cs" />
+    <Compile Include="Exceptions\DSWrite\FlverVertexStructDataNullException.cs" />
+    <Compile Include="MultiDword.cs" />
+    <Compile Include="DataTypes\TAE\AnimationGroup.cs" />
+    <Compile Include="DataTypes\TAE\AnimationRef.cs" />
+    <Compile Include="DSBinaryExtensions.cs" />
+    <Compile Include="DSBinaryReader.cs" />
+    <Compile Include="DSBinaryWriter.cs" />
+    <Compile Include="Json\StringArrayConverter.cs" />
+    <Compile Include="Json\ByteArrayConverter.cs" />
+    <Compile Include="LoadAbortedException.cs" />
+    <Compile Include="MiscUtil.cs" />
+    <Compile Include="PaddedRegion.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EmbResMan.cs" />
+    <Compile Include="WrapperData.cs" />
+    <Compile Include="WrapperDataTypes\ExcelParamSheet.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\ds1r_paramdef.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\ptde_paramdef.paramdefbnd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>; Move all assemblies and related files to lib folder
+ROBOCOPY "$(TargetDir) " "$(TargetDir)lib\ " /XF MeowDSIO.dll *.exe *.config *.manifest *.ini *.zip *FBX2FLVER.pdb /XD lib logs data /E /IS /MOVE
+if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+  </PropertyGroup>
+</Project>
