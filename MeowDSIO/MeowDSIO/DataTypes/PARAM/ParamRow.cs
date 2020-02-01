@@ -96,10 +96,10 @@ namespace MeowDSIO.DataTypes.PARAM
                 //    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} equipModelId offset: 0x{offset:X3}");
                 //}
 
-                if (nextCell.Def.Name.StartsWith("throwTypeId"))
-                {
-                    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} throwTypeId offset: 0x{offset:X}");
-                }
+                //if (nextCell.Def.Name.StartsWith("throwTypeId"))
+                //{
+                //    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} throwTypeId offset: 0x{offset:X}");
+                //}
 
                 //if (nextCell.Def.Name.StartsWith("invisibleFlag48"))
                 //{
