@@ -49,9 +49,16 @@ namespace MeowDSIO.DataFiles
             }
         }
 
-        public void ApplyDefaultParamDefs()
+        public enum DefaultParamDefType
         {
-            string defName = $"PARAMDEF.{(IsRemaster ? "ds1r" : "ptde")}_paramdef.paramdefbnd";
+            DS1,
+            DS1R,
+            BB
+        }
+
+        public void ApplyDefaultParamDefs(DefaultParamDefType defType)
+        {
+            string defName = $"PARAMDEF.{defType}_paramdef.paramdefbnd";
             using (var resStream = EmbResMan.GetStream(defName))
             {
                 using (var reader = new DSBinaryReader(defName, resStream))
@@ -65,6 +72,7 @@ namespace MeowDSIO.DataFiles
         {
             foreach (var entry in this)
             {
+
                 entry.Param.ApplyPARAMDEFTemplate(pdbnd[entry.Param.ID]);
             }
         }
@@ -232,14 +240,15 @@ namespace MeowDSIO.DataFiles
                 {
                     entryQuickLookup.Add(item.Name, item);
                 }
-                else
-                {
-                    throw new InvalidOperationException($"A {nameof(PARAMBNDEntry)} already " +
-                        $"exists in this {nameof(PARAMBND)} with the name '{item.Name}'.");
-                }
+                //else
+                //{
+                //    throw new InvalidOperationException($"A {nameof(PARAMBNDEntry)} already " +
+                //        $"exists in this {nameof(PARAMBND)} with the name '{item.Name}'.");
+                //}
+                 ((IList<PARAMBNDEntry>)entries).Add(item);
             }
 
-            ((IList<PARAMBNDEntry>)entries).Add(item);
+           
         }
 
         public void Clear()

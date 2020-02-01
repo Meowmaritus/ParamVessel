@@ -88,8 +88,15 @@ namespace MeowDSIO.DataTypes.PARAM
                         case ParamTypeDef.ON_OFF:
                         case ParamTypeDef.SP_EFFECT_BOOL:
                             if (value?.GetType() != typeof(bool))
-                                Console.WriteLine("Breakpoint hit");
-                            _value = (bool)value;
+                            {
+                                var boolAsInt = Convert.ToInt64(value);
+                                _value = boolAsInt != 0;
+                            }
+                            else
+                            {
+                                _value = (bool)value;
+                            }
+                            
                             break;
                     }
                 }

@@ -130,12 +130,24 @@ namespace MeowsBetterParamEditor
             PARAMBNDs.Clear();
             var UPCOMING_Params = new ObservableCollection<PARAMRef>();
 
+            PARAMBND.DefaultParamDefType getDefType()
+            {
+                if (Config.Kind == GameKind.DS1)
+                    return PARAMBND.DefaultParamDefType.DS1;
+                else if (Config.Kind == GameKind.DS1R)
+                    return PARAMBND.DefaultParamDefType.DS1R;
+                else if (Config.Kind == GameKind.BB)
+                    return PARAMBND.DefaultParamDefType.BB;
+                else
+                    throw new Exception();
+            }
+
             var gameparamBnds = Directory.GetFiles(Config.GameParamFolder, $"*.parambnd{(Config.IsDCX ? ".dcx" : "")}")
                 .Where(p => new FileInfo(p).Name.ToLower() == $"gameparam.parambnd{(Config.IsDCX ? ".dcx" : "")}")
-                .Select(p => DynamicParamBND.Load(p, Config.Kind == GameKind.BB));
+                .Select(p => DynamicParamBND.Load(p, Config.Kind == GameKind.BB, getDefType()));
 
             var drawparamBnds = Directory.GetFiles(Config.DrawParamFolder, $"*.parambnd{(Config.IsDCX ? ".dcx" : "")}")
-                .Select(p => DynamicParamBND.Load(p, Config.Kind == GameKind.BB));
+                .Select(p => DynamicParamBND.Load(p, Config.Kind == GameKind.BB, getDefType()));
 
             PARAMBNDs = gameparamBnds.Concat(drawparamBnds).ToList();
 

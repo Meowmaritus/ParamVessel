@@ -80,6 +80,32 @@ namespace MeowDSIO.DataTypes.PARAM
                 }
 
                 var nextCell = new ParamCellValueRef(Parent.AppliedPARAMDEF.Entries[i]);
+
+                //if (nextCell.Def.Name.StartsWith("modelDispMask0"))
+                //{
+                //    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} modelDispMask0 offset: 0x{offset:X3}");
+                //}
+
+                //if (nextCell.Def.Name.StartsWith("modelDispMask16"))
+                //{
+                //    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} modelDispMask16 offset: 0x{offset:X3}");
+                //}
+
+                //if (nextCell.Def.Name.StartsWith("equipModelId"))
+                //{
+                //    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} equipModelId offset: 0x{offset:X3}");
+                //}
+
+                if (nextCell.Def.Name.StartsWith("throwTypeId"))
+                {
+                    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} throwTypeId offset: 0x{offset:X}");
+                }
+
+                //if (nextCell.Def.Name.StartsWith("invisibleFlag48"))
+                //{
+                //    Console.WriteLine($"{(Parent.FilePath ?? Parent.VirtualUri)} invisibleFlag48 offset: 0x{offset:X}");
+                //}
+
                 nextCell.Value = Parent.AppliedPARAMDEF.Entries[i].ReadValueFromParamEntryRawData(this, ref offset, ref bitField, ref bitVal);
                 Cells.Add(nextCell);
             }

@@ -312,14 +312,15 @@
     <Compile Include="WrapperDataTypes\ExcelParamSheet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\ds1r_paramdef.paramdefbnd" />
-    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\ptde_paramdef.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\DS1R_paramdef.paramdefbnd" />
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\DS1_paramdef.paramdefbnd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EmbeddedResource Include="EmbeddedResource\PARAMDEF\BB_paramdef.paramdefbnd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

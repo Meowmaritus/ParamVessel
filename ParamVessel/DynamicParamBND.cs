@@ -11,16 +11,18 @@ namespace MeowsBetterParamEditor
 {
     public class DynamicParamBND
     {
+        public PARAMBND.DefaultParamDefType LastDefType = PARAMBND.DefaultParamDefType.DS1;
+
         public List<PARAM> Params { get; set; } = new List<PARAM>();
 
         public string FilePath = "";
 
         public bool IsBND4 = false;
 
-        public static DynamicParamBND Load(string fileName, bool isBnd4)
+        public static DynamicParamBND Load(string fileName, bool isBnd4, PARAMBND.DefaultParamDefType defType)
         {
             var result = new DynamicParamBND();
-            result.LoadFromFile(fileName, isBnd4);
+            result.LoadFromFile(fileName, isBnd4, defType);
             return result;
         }
 
@@ -38,7 +40,7 @@ namespace MeowsBetterParamEditor
 
         public void Reload()
         {
-            LoadFromFile(FilePath, IsBND4);
+            LoadFromFile(FilePath, IsBND4, LastDefType);
         }
 
         /// <summary>
@@ -103,33 +105,23 @@ namespace MeowsBetterParamEditor
             }
         }
 
-        public void LoadFromFile(string fileName, bool isBnd4)
+        public void LoadFromFile(string fileName, bool isBnd4, PARAMBND.DefaultParamDefType defType)
         {
+            LastDefType = defType;
+
             IsBND4 = isBnd4;
 
             FilePath = fileName;
 
             Params.Clear();
 
-            if (isBnd4)
-            {
-                var bnd4 = SoulsFormats.BND4.Read(fileName);
-                foreach (var f in bnd4.Files)
-                {
-                    var param = DataFile.LoadFromBytes<PARAM>(f.Bytes, f.Name);
-                    Params.Add(param);
-                }
-            }
-            else
-            {
-                var parambnd = DataFile.LoadFromFile<PARAMBND>(fileName);
+            var parambnd = DataFile.LoadFromFile<PARAMBND>(fileName);
 
-                parambnd.ApplyDefaultParamDefs();
+            parambnd.ApplyDefaultParamDefs(defType);
 
-                foreach (var f in parambnd)
-                {
-                    Params.Add(f.Param);
-                }
+            foreach (var f in parambnd)
+            {
+                Params.Add(f.Param);
             }
         }
 
